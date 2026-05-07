@@ -6,7 +6,7 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t serverpulse-backend ./serverpulse-backend'
+                sh 'docker build -t serverpulse-backend .'
             }
         }
 
