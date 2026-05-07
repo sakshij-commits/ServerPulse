@@ -6,6 +6,12 @@ node agent.js
 
 --> 13.206.248.136
 
+sudo nohup /usr/bin/jenkins > jenkins.log 2>&1 &
+sudo netstat -tulpn | grep 8080
+http://YOUR_IP:8080
+sudo cat /root/.jenkins/secrets/initialAdminPassword (for the pw)
+
+
 things to do --
 # 🐳 PHASE 7 — Dockerize Project
 
