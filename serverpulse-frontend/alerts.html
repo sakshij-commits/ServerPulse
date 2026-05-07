@@ -681,7 +681,7 @@
     // ── FETCH ──
     async function loadAlerts() {
       try {
-        const res = await fetch("http://localhost:5000/metrics/alerts?all=true", {
+        const res = await fetch("http://13.206.248.136:5000/metrics/alerts?all=true", {
           headers: { Authorization: token }
         });
         alerts = await res.json();
@@ -768,7 +768,7 @@
       btn.disabled = true;
       btn.textContent = "Acknowledging…";
       try {
-        await fetch(`http://localhost:5000/metrics/alerts/${id}/resolve`, {
+        await fetch(`http://13.206.248.136:5000/metrics/alerts/${id}/resolve`, {
           method: "POST",
           headers: { Authorization: token }
         });

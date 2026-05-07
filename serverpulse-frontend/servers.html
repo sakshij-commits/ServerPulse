@@ -985,7 +985,7 @@
     const enabled = {};   // name → bool
 
     // ── SOCKET ──
-    const socket = io("http://localhost:5000", {
+    const socket = io("http://13.206.248.136:5000", {
       auth: { token }
     });
 
@@ -1070,7 +1070,7 @@
           if (!confirm(`Remove ${sid} from the list?`)) return;
 
           try {
-            await fetch(`http://localhost:5000/servers/${sid}`, {
+            await fetch(`http://13.206.248.136:5000/servers/${sid}`, {
               method: "DELETE",
               headers: { Authorization: token }
             });
@@ -1185,7 +1185,7 @@
     // ── LOAD SERVERS FROM DB ──
     async function loadServers() {
       try {
-        const res = await fetch("http://localhost:5000/servers", {
+        const res = await fetch("http://13.206.248.136:5000/servers", {
           headers: { Authorization: token }
         });
         const data = await res.json();
@@ -1211,7 +1211,7 @@
     async function toggleServer(id, e) {
       e.stopPropagation();
 
-      await fetch(`http://localhost:5000/servers/${id}/toggle`, {
+      await fetch(`http://13.206.248.136:5000/servers/${id}/toggle`, {
         method: "POST",
         headers: { Authorization: token }
       });
@@ -1307,7 +1307,7 @@
     function handleOverlayClick(e) { if (e.target === document.getElementById("modalOverlay")) closeModal(); }
 
     async function saveServer() {
-      const name = document.getElementById("m-name").value.trim ();
+      const name = document.getElementById("m-name").value.trim();
       const ip = document.getElementById("m-ip").value.trim();
       const env = document.getElementById("m-env").value;
 
@@ -1318,7 +1318,7 @@
       saveBtn.textContent = "Saving…";
 
       try {
-        await fetch("http://localhost:5000/servers", {
+        await fetch("http://13.206.248.136:5000/servers", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
