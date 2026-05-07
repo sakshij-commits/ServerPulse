@@ -26,5 +26,14 @@ pipeline {
                 '''
             }
         }
+
+        stage('Deploy Frontend') {
+            steps {
+                sh '''
+                sudo rm -rf /var/www/html/*
+                sudo cp -r serverpulse-frontend/* /var/www/html/
+                '''
+            }
+        }
     }
 }
