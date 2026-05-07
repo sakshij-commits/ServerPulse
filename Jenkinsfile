@@ -21,7 +21,7 @@ pipeline {
                 docker run -d -p 5000:5000 \
                 --restart unless-stopped \
                 --name serverpulse-api \
-                --env-file /home/ubuntu/serverpulse-env/.env \
+                --env-file /opt/serverpulse/.env \
                 serverpulse-backend
                 '''
             }
