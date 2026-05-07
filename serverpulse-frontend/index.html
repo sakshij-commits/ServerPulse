@@ -1167,7 +1167,7 @@
       window.location.href = "auth.html";
     }
 
-    const socket = io("http://13.206.248.136:5000", {
+    const socket = io("/api", {
       auth: {
         token: localStorage.getItem("token")
       }
@@ -1364,7 +1364,7 @@
     // ── load alerts ──
     async function loadAlerts() {
       try {
-        const res = await fetch("http://13.206.248.136:5000/metrics/alerts", {
+        const res = await fetch("/api/metrics/alerts", {
           headers: { Authorization: localStorage.getItem("token") }
         });
         const alerts = await res.json();
@@ -1547,7 +1547,7 @@
     async function loadHistory() {
       const serverId = document.getElementById('serverSelect').value;
       try {
-        const res = await fetch(`http://13.206.248.136:5000/metrics/history/${serverId}?range=${dashRange}`, {
+        const res = await fetch(`/api/metrics/history/${serverId}?range=${dashRange}`, {
           headers: { Authorization: localStorage.getItem("token") }
         });
         const data = await res.json();
@@ -1585,7 +1585,7 @@
       loadHistory();
     });
   </script>
-  <script src="http://13.206.248.136:5000/socket.io/socket.io.js"></script>
+  <script src="/api/socket.io/socket.io.js"></script>
 </body>
 
 </html>

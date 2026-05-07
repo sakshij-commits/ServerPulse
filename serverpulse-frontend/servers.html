@@ -985,7 +985,7 @@
     const enabled = {};   // name → bool
 
     // ── SOCKET ──
-    const socket = io("http://13.206.248.136:5000", {
+    const socket = io("/api", {
       auth: { token }
     });
 
@@ -1070,7 +1070,7 @@
           if (!confirm(`Remove ${sid} from the list?`)) return;
 
           try {
-            await fetch(`http://13.206.248.136:5000/servers/${sid}`, {
+            await fetch(`/api/servers/${sid}`, {
               method: "DELETE",
               headers: { Authorization: token }
             });
@@ -1185,7 +1185,7 @@
     // ── LOAD SERVERS FROM DB ──
     async function loadServers() {
       try {
-        const res = await fetch("http://13.206.248.136:5000/servers", {
+        const res = await fetch("/api/servers", {
           headers: { Authorization: token }
         });
         const data = await res.json();
@@ -1211,7 +1211,7 @@
     async function toggleServer(id, e) {
       e.stopPropagation();
 
-      await fetch(`http://13.206.248.136:5000/servers/${id}/toggle`, {
+      await fetch(`/api/servers/${id}/toggle`, {
         method: "POST",
         headers: { Authorization: token }
       });
@@ -1318,7 +1318,7 @@
       saveBtn.textContent = "Saving…";
 
       try {
-        await fetch("http://13.206.248.136:5000/servers", {
+        await fetch("/api/servers", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

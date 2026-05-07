@@ -791,7 +791,7 @@
       const urlServer = new URLSearchParams(window.location.search).get("server");
 
       try {
-        const res = await fetch("http://13.206.248.136:5000/servers", { headers: { Authorization: token } });
+        const res = await fetch("/api/servers", { headers: { Authorization: token } });
         const data = await res.json();
         const sel = document.getElementById("serverSelect");
 
@@ -836,7 +836,7 @@
 
     async function fetchMetrics(serverId) {
       try {
-        const res = await fetch(`http://13.206.248.136:5000/metrics/history/${serverId}?range=${range}`, {
+        const res = await fetch(`/api/metrics/history/${serverId}?range=${range}`, {
           headers: { Authorization: token }
         });
         return await res.json();
@@ -845,7 +845,7 @@
 
     async function fetchAlertHistory(serverId) {
       try {
-        const res = await fetch(`http://13.206.248.136:5000/metrics/alerts/history?serverId=${serverId}`, {
+        const res = await fetch(`/api/metrics/alerts/history?serverId=${serverId}`, {
           headers: { Authorization: token }
         });
         return await res.json();
