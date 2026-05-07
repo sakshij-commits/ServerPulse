@@ -6,7 +6,7 @@ const axios = require("axios");
 const SERVER_ID = "Server-1";
 
 // 🔥 YOUR BACKEND URL
-const BACKEND_URL = "/api/metrics";
+const BACKEND_URL = "http://3.6.40.251:5000/metrics";
 let pollingInterval = 5000;
 let metricsLoop;
 

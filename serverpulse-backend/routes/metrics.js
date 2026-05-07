@@ -99,7 +99,7 @@ module.exports = (io) => {
       const saved = await Metric.create(data);
 
       // ✅ Emit realtime
-      io.emit("metrics", saved);
+      io.emit("metrics", data);
 
       // 🔥 FETCH THRESHOLD (PER SERVER)
       const threshold =
