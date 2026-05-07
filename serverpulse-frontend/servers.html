@@ -1,0 +1,1353 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ServerPulse — Servers</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap"
+    rel="stylesheet" />
+  <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #f5f3ef;
+      --surface: #fdfcfb;
+      --border: #e8e4dc;
+      --text-1: #2c2a26;
+      --text-2: #7a7670;
+      --text-3: #b0aca4;
+      --sage: #a8c5b0;
+      --sage-bg: #eaf2ec;
+      --sage-dark: #4a7c5a;
+      --blush: #e8b4b0;
+      --blush-bg: #fceeed;
+      --blush-dark: #9c4a45;
+      --butter: #e8d28a;
+      --butter-bg: #fdf7e3;
+      --butter-dark: #8a6e20;
+      --lavender-bg: #f0ecf8;
+      --lavender: #c4b8d8;
+      --radius-sm: 10px;
+      --radius-md: 16px;
+      --radius-lg: 22px;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text-1);
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* ── SIDEBAR (identical to index.html) ── */
+    .sidebar {
+      width: 200px;
+      min-height: 100vh;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      padding: 28px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 36px;
+      position: sticky;
+      top: 0;
+      align-self: flex-start;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-dot {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: var(--sage-bg);
+      border: 1.5px solid var(--sage);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .logo-dot::after {
+      content: '';
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--sage-dark);
+      animation: blink 2s ease-in-out infinite;
+    }
+
+    @keyframes blink {
+
+      0%,
+      100% {
+        opacity: 1;
+        transform: scale(1)
+      }
+
+      50% {
+        opacity: 0.4;
+        transform: scale(0.75)
+      }
+    }
+
+    .logo-text {
+      font-size: 15px;
+      font-weight: 500;
+      letter-spacing: -0.3px;
+    }
+
+    .nav {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 12px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-size: 13.5px;
+      color: var(--text-2);
+      transition: background 0.15s, color 0.15s;
+    }
+
+    .nav-item:hover {
+      background: var(--bg);
+      color: var(--text-1);
+    }
+
+    .nav-item.active {
+      background: var(--sage-bg);
+      color: var(--sage-dark);
+      font-weight: 500;
+    }
+
+    .nav-icon {
+      width: 16px;
+      height: 16px;
+      opacity: 0.75;
+    }
+
+    .sidebar-footer {
+      margin-top: auto;
+      font-size: 11px;
+      color: var(--text-3);
+      line-height: 1.7;
+    }
+
+    .live-dot {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--sage-dark);
+      margin-right: 5px;
+      vertical-align: middle;
+      animation: blink 2s ease-in-out infinite;
+    }
+
+    /* ── MAIN ── */
+    .main {
+      flex: 1;
+      padding: 32px 36px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    /* ── TOPBAR ── */
+    .topbar {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+    }
+
+    .page-title {
+      font-size: 20px;
+      font-weight: 500;
+      letter-spacing: -0.4px;
+    }
+
+    .page-sub {
+      font-size: 12.5px;
+      color: var(--text-3);
+      margin-top: 4px;
+    }
+
+    .page-sub b {
+      color: var(--text-2);
+      font-weight: 500;
+    }
+
+    .logout-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-2);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 6px 12px;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+    }
+
+    .logout-btn:hover {
+      background: var(--blush-bg);
+      color: var(--blush-dark);
+      border-color: var(--blush);
+    }
+
+    /* ── ACTION BAR ── */
+    .action-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .search-wrap {
+      position: relative;
+      flex: 1;
+      max-width: 320px;
+    }
+
+    .search-wrap svg {
+      position: absolute;
+      left: 11px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 14px;
+      height: 14px;
+      opacity: 0.4;
+      pointer-events: none;
+    }
+
+    .search-input {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      color: var(--text-1);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 9px 12px 9px 32px;
+      outline: none;
+      width: 100%;
+      transition: border-color 0.15s;
+    }
+
+    .search-input::placeholder {
+      color: var(--text-3);
+    }
+
+    .search-input:focus {
+      border-color: var(--sage);
+    }
+
+    .filter-select {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12.5px;
+      color: var(--text-2);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 9px 28px 9px 12px;
+      outline: none;
+      cursor: pointer;
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='none'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23b0aca4' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      transition: border-color 0.15s;
+    }
+
+    .filter-select:focus {
+      border-color: var(--sage);
+    }
+
+    .action-bar-right {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-add {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--surface);
+      background: var(--sage-dark);
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: 9px 16px;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+
+    .btn-add:hover {
+      opacity: 0.85;
+    }
+
+    .btn-add svg {
+      width: 13px;
+      height: 13px;
+    }
+
+    /* ── SERVER GRID ── */
+    .server-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 16px;
+    }
+
+    /* ── SERVER CARD ── */
+    .server-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s, border-color 0.25s, box-shadow 0.25s;
+    }
+
+    .server-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--sage);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+    }
+
+    .server-card.critical {
+      border-color: var(--blush) !important;
+      box-shadow: 0 0 20px rgba(232, 100, 92, 0.1);
+    }
+
+    .server-card.warning {
+      border-color: var(--butter) !important;
+    }
+
+    .server-card.critical::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--blush), transparent);
+    }
+
+    .server-card.warning::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--butter), transparent);
+    }
+
+    /* card header */
+    .card-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+    }
+
+    .server-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .server-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: var(--lavender-bg);
+      border: 1px solid var(--lavender);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 500;
+      color: #6e5d8c;
+      font-family: 'DM Mono', monospace;
+      flex-shrink: 0;
+    }
+
+    .server-name {
+      font-size: 13.5px;
+      font-weight: 500;
+    }
+
+    .server-env {
+      font-size: 10.5px;
+      color: var(--text-3);
+      font-family: 'DM Mono', monospace;
+      margin-top: 1px;
+    }
+
+    .status-pill {
+      font-size: 10.5px;
+      padding: 3px 9px;
+      border-radius: 20px;
+      font-weight: 500;
+      flex-shrink: 0;
+    }
+
+    .pill-healthy {
+      background: var(--sage-bg);
+      color: var(--sage-dark);
+      border: 1px solid var(--sage);
+    }
+
+    .pill-warning {
+      background: var(--butter-bg);
+      color: var(--butter-dark);
+      border: 1px solid var(--butter);
+    }
+
+    .pill-critical {
+      background: var(--blush-bg);
+      color: var(--blush-dark);
+      border: 1px solid var(--blush);
+    }
+
+    .pill-offline {
+      background: #f0f0f0;
+      color: #999;
+      border: 1px solid #ddd;
+    }
+
+    /* metrics */
+    .metrics {
+      display: flex;
+      flex-direction: column;
+      gap: 11px;
+      margin-bottom: 16px;
+    }
+
+    .metric-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .metric-label {
+      font-size: 10.5px;
+      color: var(--text-3);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      width: 32px;
+      flex-shrink: 0;
+    }
+
+    .metric-bar-wrap {
+      flex: 1;
+      height: 5px;
+      background: var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .metric-bar-fill {
+      height: 100%;
+      border-radius: 10px;
+      transition: width 0.5s ease;
+    }
+
+    .fill-ok {
+      background: var(--sage);
+    }
+
+    .fill-warn {
+      background: var(--butter);
+    }
+
+    .fill-crit {
+      background: var(--blush);
+    }
+
+    .metric-val {
+      font-size: 11.5px;
+      font-family: 'DM Mono', monospace;
+      color: var(--text-2);
+      width: 36px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    /* card footer */
+    .card-foot {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+    }
+
+    .foot-stats {
+      display: flex;
+      gap: 16px;
+    }
+
+    .foot-stat {
+      font-size: 11px;
+      color: var(--text-3);
+    }
+
+    .foot-stat b {
+      color: var(--text-2);
+      font-weight: 500;
+      font-family: 'DM Mono', monospace;
+    }
+
+    /* admin actions */
+    .card-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .icon-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 7px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+    }
+
+    .icon-btn:hover {
+      background: var(--surface);
+      border-color: var(--sage);
+    }
+
+    .icon-btn.delete:hover {
+      background: var(--blush-bg);
+      border-color: var(--blush);
+    }
+
+    .icon-btn svg {
+      width: 13px;
+      height: 13px;
+      color: var(--text-2);
+    }
+
+    .icon-btn.delete svg {
+      color: var(--blush-dark);
+    }
+
+    /* toggle switch */
+    .toggle-wrap {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .toggle {
+      position: relative;
+      width: 30px;
+      height: 17px;
+      cursor: pointer;
+    }
+
+    .toggle input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .toggle-slider {
+      position: absolute;
+      inset: 0;
+      background: var(--border);
+      border-radius: 17px;
+      transition: background 0.2s;
+    }
+
+    .toggle-slider::before {
+      content: '';
+      position: absolute;
+      width: 13px;
+      height: 13px;
+      left: 2px;
+      bottom: 2px;
+      border-radius: 50%;
+      background: white;
+      transition: transform 0.2s;
+    }
+
+    .toggle input:checked+.toggle-slider {
+      background: var(--sage-dark);
+    }
+
+    .toggle input:checked+.toggle-slider::before {
+      transform: translateX(13px);
+    }
+
+    /* ── EMPTY STATE ── */
+    .empty-state {
+      grid-column: 1/-1;
+      text-align: center;
+      padding: 70px 20px;
+      color: var(--text-3);
+    }
+
+    .empty-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: var(--sage-bg);
+      border: 1.5px dashed var(--sage);
+      margin: 0 auto 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .empty-state p {
+      font-size: 13.5px;
+      margin-top: 6px;
+    }
+
+    .empty-state small {
+      font-size: 11.5px;
+      opacity: 0.7;
+    }
+
+    /* ── ADD SERVER MODAL ── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(44, 42, 38, 0.35);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      backdrop-filter: blur(2px);
+    }
+
+    .modal-overlay.open {
+      display: flex;
+    }
+
+    .modal {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      width: 380px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      animation: modalIn 0.2s ease;
+    }
+
+    @keyframes modalIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .modal-title {
+      font-size: 15px;
+      font-weight: 500;
+    }
+
+    .modal-close {
+      width: 28px;
+      height: 28px;
+      border-radius: 7px;
+      border: 1px solid var(--border);
+      background: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-2);
+      transition: background 0.15s;
+    }
+
+    .modal-close:hover {
+      background: var(--bg);
+    }
+
+    .modal-field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .modal-field label {
+      font-size: 11.5px;
+      color: var(--text-2);
+      font-weight: 500;
+    }
+
+    .modal-field input,
+    .modal-field select {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13.5px;
+      color: var(--text-1);
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 9px 13px;
+      outline: none;
+      width: 100%;
+      transition: border-color 0.15s;
+    }
+
+    .modal-field input:focus,
+    .modal-field select:focus {
+      border-color: var(--sage);
+      background: var(--surface);
+    }
+
+    .modal-field input::placeholder {
+      color: var(--text-3);
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    .btn-save {
+      flex: 1;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--surface);
+      background: var(--sage-dark);
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: 10px;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+
+    .btn-save:hover {
+      opacity: 0.85;
+    }
+
+    .btn-cancel {
+      flex: 1;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      color: var(--text-2);
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 10px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .btn-cancel:hover {
+      background: var(--border);
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ── SIDEBAR ── -->
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="logo-dot"></div>
+      <span class="logo-text">ServerPulse</span>
+    </div>
+    <nav class="nav">
+      <div class="nav-item" onclick="go('index.html')">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
+          <rect x="1" y="1" width="6" height="6" rx="1.5" fill="currentColor" opacity="0.9" />
+          <rect x="9" y="1" width="6" height="6" rx="1.5" fill="currentColor" opacity="0.5" />
+          <rect x="1" y="9" width="6" height="6" rx="1.5" fill="currentColor" opacity="0.5" />
+          <rect x="9" y="9" width="6" height="6" rx="1.5" fill="currentColor" opacity="0.5" />
+        </svg>
+        Dashboard
+      </div>
+      <div class="nav-item active" onclick="go('servers.html')">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
+          <rect x="1" y="3" width="14" height="10" rx="2" stroke="currentColor" stroke-width="1.5" />
+          <path d="M5 7h6M5 9.5h4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" />
+        </svg>
+        Servers
+      </div>
+      <div class="nav-item" onclick="go('alerts.html')">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
+          <path d="M8 2v3M8 11v3M2 8h3M11 8h3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+          <circle cx="8" cy="8" r="3" stroke="currentColor" stroke-width="1.5" />
+        </svg>
+        Alerts
+      </div>
+      <div class="nav-item" onclick="go('history.html')">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
+          <circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.5" />
+          <path d="M8 5v3l2 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+        </svg>
+        History
+      </div>
+      <div class="nav-item" onclick="go('settings.html')">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
+          <circle cx="8" cy="5" r="2.5" stroke="currentColor" stroke-width="1.5" />
+          <path d="M2.5 13c0-2.485 2.462-4.5 5.5-4.5s5.5 2.015 5.5 4.5" stroke="currentColor" stroke-width="1.5"
+            stroke-linecap="round" />
+        </svg>
+        Settings
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <span class="live-dot"></span>Live · every 5s
+    </div>
+  </aside>
+
+  <!-- ── MAIN ── -->
+  <main class="main">
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <div>
+        <div class="page-title">Servers</div>
+        <div class="page-sub" id="server-subtitle">Loading…</div>
+      </div>
+      <button class="logout-btn" onclick="logout()">
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
+          <path d="M6 2H3a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3M11 11l3-3-3-3M14 8H6" stroke="currentColor"
+            stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+        Logout
+      </button>
+    </div>
+
+    <!-- ACTION BAR -->
+    <div class="action-bar">
+      <div class="search-wrap">
+        <svg viewBox="0 0 16 16" fill="none">
+          <circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" stroke-width="1.5" />
+          <path d="M10 10l3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+        </svg>
+        <input class="search-input" id="searchInput" type="text" placeholder="Search by server name…"
+          oninput="applyFilters()" />
+      </div>
+
+      <select class="filter-select" id="filterSelect" onchange="applyFilters()">
+        <option value="all">All</option>
+        <option value="online">Online</option>
+        <option value="offline">Offline</option>
+        <option value="healthy">Healthy</option>
+        <option value="warning">Warning</option>
+        <option value="critical">Critical</option>
+      </select>
+
+      <!-- Add Server — admin only, shown via JS -->
+      <div class="action-bar-right">
+        <button class="btn-add" id="addBtn" style="display:none;" onclick="openModal()">
+          <svg viewBox="0 0 16 16" fill="none">
+            <path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+          </svg>
+          Add Server
+        </button>
+      </div>
+    </div>
+
+    <!-- SERVER GRID -->
+    <div class="server-grid" id="serverGrid">
+      <div class="empty-state">
+        <div class="empty-icon">
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+            <circle cx="11" cy="11" r="4" fill="#a8c5b0" />
+            <circle cx="11" cy="11" r="8" stroke="#a8c5b0" stroke-width="1.5" stroke-dasharray="3 2" />
+          </svg>
+        </div>
+        <p>No servers connected yet</p>
+        <small>Start the agent script on a machine to see it here</small>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ── SERVER DETAIL MODAL ── -->
+  <div class="modal-overlay" id="detail-modal" onclick="if(event.target===this)closeDetailModal()">
+    <div class="modal" style="width:440px;">
+      <div id="detail-modal-body"></div>
+    </div>
+  </div>
+
+  <!-- ── ADD SERVER MODAL ── -->
+  <div class="modal-overlay" id="modalOverlay" onclick="handleOverlayClick(event)">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title">Add Server</div>
+        <button class="modal-close" onclick="closeModal()">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+            <path d="M1 1l10 10M11 1L1 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="modal-field">
+        <label>Server Name</label>
+        <input id="m-name" type="text" placeholder="e.g. prod-server-01" />
+      </div>
+      <div class="modal-field">
+        <label>IP Address</label>
+        <input id="m-ip" type="text" placeholder="e.g. 192.168.1.100" />
+      </div>
+      <div class="modal-field">
+        <label>Environment</label>
+        <select id="m-env">
+          <option value="production">Production</option>
+          <option value="staging">Staging</option>
+          <option value="development">Development</option>
+        </select>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+        <button class="btn-save" onclick="saveServer()">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ── AUTH GUARD ──
+    const token = localStorage.getItem("token");
+    if (!token) window.location.href = "auth.html";
+
+    // decode role from JWT payload
+    let userRole = "viewer";
+    try {
+      const payload = JSON.parse(atob(token.split(".")[1]));
+      userRole = payload.role || "viewer";
+      if (userRole === "admin") {
+        document.getElementById("addBtn").style.display = "flex";
+      }
+    } catch { }
+
+    function logout() {
+      localStorage.removeItem("token");
+      window.location.href = "auth.html";
+    }
+
+    function go(page) {
+      window.location.href = page;
+    }
+
+    // ── SERVER STATE ──
+    let servers = {};     // name → { ...dbRecord, metrics: null | liveData }
+    const enabled = {};   // name → bool
+
+    // ── SOCKET ──
+    const socket = io("http://localhost:5000", {
+      auth: { token }
+    });
+
+    socket.on("metrics", (data) => {
+      if (!servers[data.serverId] || !servers[data.serverId].isActive) {
+        return;
+      }
+
+      servers[data.serverId].metrics = data;
+      servers[data.serverId]._offline = false;
+
+      clearTimeout(servers[data.serverId]._timeout);
+
+      servers[data.serverId]._timeout = setTimeout(() => {
+        servers[data.serverId]._offline = true;
+        applyFilters();
+      }, 15500);
+
+      applyFilters();
+    });
+
+    // ── STATUS LOGIC ──
+    function getStatus(server) {
+      if (!server || server._offline || !server.metrics) return "offline";
+      const m = server.metrics;
+      const cpu = m.cpu;
+      const ram = (m.ramUsed / m.ramTotal) * 100;
+      if (cpu > 85 || ram > 85) return "critical";
+      if (cpu > 70 || ram > 70) return "warning";
+      return "healthy";
+    }
+
+    function fillClass(v) { return v > 85 ? "fill-crit" : v > 70 ? "fill-warn" : "fill-ok"; }
+
+    function pillClass(status) {
+      return { healthy: "pill-healthy", warning: "pill-warning", critical: "pill-critical", offline: "pill-offline" }[status];
+    }
+
+    function initials(id) { return id.slice(0, 2).toUpperCase(); }
+
+    // ── RENDER ──
+    function applyFilters() {
+      const search = document.getElementById("searchInput").value.toLowerCase();
+      const filter = document.getElementById("filterSelect").value;
+      const grid = document.getElementById("serverGrid");
+
+      const ids = Object.keys(servers).filter(id => {
+        const matchSearch = id.toLowerCase().includes(search);
+        const status = getStatus(servers[id]);
+        const isOnline = status !== "offline";
+        let matchFilter;
+        if (filter === "all") matchFilter = true;
+        else if (filter === "online") matchFilter = isOnline;
+        else if (filter === "offline") matchFilter = !isOnline;
+        else matchFilter = status === filter;
+        return matchSearch && matchFilter;
+      });
+
+      if (ids.length === 0) {
+        grid.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-icon">
+            <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+              <circle cx="11" cy="11" r="4" fill="#a8c5b0"/>
+              <circle cx="11" cy="11" r="8" stroke="#a8c5b0" stroke-width="1.5" stroke-dasharray="3 2"/>
+            </svg>
+          </div>
+          <p>${Object.keys(servers).length === 0 ? "No servers connected yet" : "No servers match your filter"}</p>
+          <small>${Object.keys(servers).length === 0 ? "Start the agent script on a machine to see it here" : "Try changing the search or filter"}</small>
+        </div>`;
+        return;
+      }
+
+      // build cards
+      grid.innerHTML = ids.map(id => renderCard(id)).join("");
+
+      // re-attach delete listeners
+      grid.querySelectorAll(".delete").forEach(btn => {
+        btn.addEventListener("click", async (e) => {
+          e.stopPropagation();
+          const sid = btn.dataset.id;
+          if (!confirm(`Remove ${sid} from the list?`)) return;
+
+          try {
+            await fetch(`http://localhost:5000/servers/${sid}`, {
+              method: "DELETE",
+              headers: { Authorization: token }
+            });
+          } catch { }  // best-effort, still remove from UI
+
+          delete servers[sid];
+          applyFilters();
+          updateSubtitle();
+        });
+      });
+
+      // re-attach toggle listeners
+      grid.querySelectorAll(".toggle input").forEach(chk => {
+        chk.addEventListener("change", (e) => {
+          e.stopPropagation();
+          const sid = chk.dataset.id;
+          enabled[sid] = chk.checked;
+        });
+      });
+
+      // card click → open detail modal (NOT navigation)
+      grid.querySelectorAll(".server-card").forEach(card => {
+        card.addEventListener("click", (e) => {
+          if (e.target.closest(".card-actions")) return;
+          showServerDetail(card.dataset.id);
+        });
+      });
+    }
+
+    function renderCard(id) {
+      const server = servers[id];
+      const m = server.metrics;
+      const status = getStatus(server);
+
+      const cpu = m ? m.cpu.toFixed(1) : "—";
+      const ram = m ? ((m.ramUsed / m.ramTotal) * 100).toFixed(1) : "—";
+      const disk = m ? ((m.diskUsed / m.diskTotal) * 100).toFixed(1) : "—";
+      const uptime = m ? (m.uptime / 3600).toFixed(1) : "—";
+      const net = m && m.networkIn ? ((m.networkIn + m.networkOut) / 1024).toFixed(0) + " KB/s" : "—";
+      const procs = m ? (m.totalProcesses || "—") : "—";
+      const ramUsedGB = m ? (m.ramUsed / (1024 ** 3)).toFixed(2) : "—";
+      const ramTotalGB = m ? (m.ramTotal / (1024 ** 3)).toFixed(2) : "—";
+      const envTag = server.environment ? `${server.environment}` : "unknown";
+      const isOn = server.isActive === true && !server._offline;
+
+      const adminActions = userRole === "admin" ? `
+      <div class="card-actions" onclick="event.stopPropagation()">
+        <label class="toggle" title="${isOn ? "Disable" : "Enable"}">
+          <input type="checkbox" ${isOn ? "checked" : ""} data-id="${id}" onclick="toggleServer('${id}', event)"/>
+          <span class="toggle-slider"></span>
+        </label>
+        <button class="icon-btn delete" data-id="${id}" title="Remove server">
+          <svg viewBox="0 0 16 16" fill="none">
+            <path d="M3 4h10M6 4V3h4v1M5 4l.5 9h5l.5-9" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>` : "";
+
+      return `
+      <div class="server-card ${status}" data-id="${id}">
+        <div class="card-head">
+          <div class="server-info">
+            <div class="server-avatar">${initials(id)}</div>
+            <div>
+              <div class="server-name">${id}</div>
+              <div class="server-env">${envTag} · ${status === "offline" ? "offline" : "live"}</div>
+            </div>
+          </div>
+          <span class="status-pill ${pillClass(status)}">${status}</span>
+        </div>
+
+        <div class="metrics">
+          <div class="metric-row">
+            <span class="metric-label">CPU</span>
+            <div class="metric-bar-wrap"><div class="metric-bar-fill ${m ? fillClass(cpu) : ''}" style="width:${m ? cpu : 0}%"></div></div>
+            <span class="metric-val">${cpu}${m ? '%' : ''}</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-label">RAM</span>
+            <div class="metric-bar-wrap"><div class="metric-bar-fill ${m ? fillClass(ram) : ''}" style="width:${m ? ram : 0}%"></div></div>
+            <span class="metric-val">${ram}${m ? '%' : ''}</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-label">Disk</span>
+            <div class="metric-bar-wrap"><div class="metric-bar-fill ${m ? fillClass(disk) : ''}" style="width:${m ? disk : 0}%"></div></div>
+            <span class="metric-val">${disk}${m ? '%' : ''}</span>
+          </div>
+        </div>
+
+        <div class="card-foot">
+          <div class="foot-stats">
+            <span class="foot-stat">Up <b>${uptime}${m ? 'h' : ''}</b></span>
+            <span class="foot-stat">Net <b>${net}</b></span>
+            <span class="foot-stat">Proc <b>${procs}</b></span>
+          </div>
+          ${adminActions}
+        </div>
+      </div>`;
+    }
+
+    function updateSubtitle() {
+      const total = Object.keys(servers).length;
+      const offline = Object.values(servers).filter(d => getStatus(d) === "offline").length;
+      const online = total - offline;
+      const critical = Object.values(servers).filter(d => getStatus(d) === "critical").length;
+      const warning = Object.values(servers).filter(d => getStatus(d) === "warning").length;
+      const healthy = Object.values(servers).filter(d => getStatus(d) === "healthy").length;
+      document.getElementById("server-subtitle").innerHTML =
+        `<b>${total}</b> total &nbsp;·&nbsp; <b>${online}</b> online &nbsp;·&nbsp; <b>${offline}</b> offline &nbsp;·&nbsp; <b>${healthy}</b> healthy &nbsp;·&nbsp; <b>${warning}</b> warning &nbsp;·&nbsp; <b>${critical}</b> critical`;
+    }
+
+    // ── LOAD SERVERS FROM DB ──
+    async function loadServers() {
+      try {
+        const res = await fetch("http://localhost:5000/servers", {
+          headers: { Authorization: token }
+        });
+        const data = await res.json();
+
+        data.forEach(s => {
+          const existing = servers[s.name];
+          servers[s.name] = {
+            ...s,
+            metrics: existing ? existing.metrics : null,
+            _offline: existing ? existing._offline : true
+          };
+          if (!(s.name in enabled)) enabled[s.name] = s.isActive !== false;;
+        });
+
+        applyFilters();
+        updateSubtitle();
+      } catch (err) {
+        console.warn("Could not load servers from DB:", err.message);
+      }
+    }
+
+    // ── TOGGLE SERVER ──
+    async function toggleServer(id, e) {
+      e.stopPropagation();
+
+      await fetch(`http://localhost:5000/servers/${id}/toggle`, {
+        method: "POST",
+        headers: { Authorization: token }
+      });
+
+      await loadServers();
+    }
+
+    // ── SERVER DETAIL MODAL ──
+    function showServerDetail(id) {
+      const server = servers[id];
+      const m = server ? server.metrics : null;
+
+      const ramUsedGB = m ? (m.ramUsed / (1024 ** 3)).toFixed(2) : "—";
+      const ramTotalGB = m ? (m.ramTotal / (1024 ** 3)).toFixed(2) : "—";
+      const cpu = m ? m.cpu.toFixed(1) : "—";
+      const ram = m ? ((m.ramUsed / m.ramTotal) * 100).toFixed(1) : "—";
+      const disk = m ? ((m.diskUsed / m.diskTotal) * 100).toFixed(1) : "—";
+      const uptime = m ? (m.uptime / 3600).toFixed(1) : "—";
+      const net = m && m.networkIn ? ((m.networkIn + m.networkOut) / 1024).toFixed(0) : "—";
+      const procs = m ? (m.totalProcesses || "—") : "—";
+      const status = getStatus(server);
+
+      function bar(val, cls) {
+        return `<div style="flex:1;height:6px;background:var(--border);border-radius:10px;overflow:hidden;">
+        <div style="width:${val}%;height:100%;border-radius:10px;transition:width 0.4s ease;" class="${cls}"></div>
+      </div>`;
+      }
+      function fc(v) { return v > 85 ? "fill-crit" : v > 70 ? "fill-warn" : "fill-ok"; }
+
+      document.getElementById("detail-modal-body").innerHTML = `
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;">
+        <div class="server-avatar" style="width:42px;height:42px;font-size:13px;">${initials(id)}</div>
+        <div>
+          <div style="font-size:16px;font-weight:500;">${id}</div>
+          <div style="font-size:11.5px;color:var(--text-3);font-family:'DM Mono',monospace;margin-top:2px;">
+            ${server.ip || "—"} · ${server.environment || "unknown"}
+          </div>
+        </div>
+        <span class="status-pill ${pillClass(status)}" style="margin-left:auto;">${status}</span>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:13px;margin-bottom:20px;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="font-size:10.5px;color:var(--text-3);text-transform:uppercase;letter-spacing:0.5px;width:36px;">CPU</span>
+          ${m ? bar(cpu, fc(cpu)) : bar(0, "")}
+          <span style="font-size:12px;font-family:'DM Mono',monospace;color:var(--text-2);width:40px;text-align:right;">${cpu}${m ? "%" : ""}</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="font-size:10.5px;color:var(--text-3);text-transform:uppercase;letter-spacing:0.5px;width:36px;">RAM</span>
+          ${m ? bar(ram, fc(ram)) : bar(0, "")}
+          <span style="font-size:12px;font-family:'DM Mono',monospace;color:var(--text-2);width:40px;text-align:right;">${ram}${m ? "%" : ""}</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="font-size:10.5px;color:var(--text-3);text-transform:uppercase;letter-spacing:0.5px;width:36px;">Disk</span>
+          ${m ? bar(disk, fc(disk)) : bar(0, "")}
+          <span style="font-size:12px;font-family:'DM Mono',monospace;color:var(--text-2);width:40px;text-align:right;">${disk}${m ? "%" : ""}</span>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;padding-top:16px;border-top:1px solid var(--border);">
+        ${[
+          ["RAM Usage", `${ramUsedGB} / ${ramTotalGB} GB`],
+          ["Network", `${net} KB/s`],
+          ["Processes", `${procs} running`],
+          ["Uptime", `${uptime}${m ? " hrs" : ""}`],
+        ].map(([l, v]) => `
+          <div style="background:var(--bg);border-radius:var(--radius-sm);padding:12px 14px;">
+            <div style="font-size:10.5px;color:var(--text-3);margin-bottom:4px;">${l}</div>
+            <div style="font-size:13px;font-family:'DM Mono',monospace;color:var(--text-2);">${v}</div>
+          </div>`).join("")}
+      </div>
+
+      <div style="margin-top:16px;display:flex;gap:10px;">
+        <button class="btn-add" style="flex:1;justify-content:center;" onclick="go('history.html?server=${id}')">
+          View History
+        </button>
+        <button onclick="closeDetailModal()" style="flex:1;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text-2);background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:9px;cursor:pointer;">
+          Close
+        </button>
+      </div>
+    `;
+
+      document.getElementById("detail-modal").classList.add("open");
+    }
+
+    function closeDetailModal() {
+      document.getElementById("detail-modal").classList.remove("open");
+    }
+
+    // ── MODAL ──
+    function openModal() { document.getElementById("modalOverlay").classList.add("open"); }
+    function closeModal() { document.getElementById("modalOverlay").classList.remove("open"); }
+    function handleOverlayClick(e) { if (e.target === document.getElementById("modalOverlay")) closeModal(); }
+
+    async function saveServer() {
+      const name = document.getElementById("m-name").value.trim ();
+      const ip = document.getElementById("m-ip").value.trim();
+      const env = document.getElementById("m-env").value;
+
+      if (!name || !ip) { alert("Please fill in server name and IP."); return; }
+
+      const saveBtn = document.querySelector(".btn-save");
+      saveBtn.disabled = true;
+      saveBtn.textContent = "Saving…";
+
+      try {
+        await fetch("http://localhost:5000/servers", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: token
+          },
+          body: JSON.stringify({ name, ip, environment: env })
+        });
+
+        closeModal();
+        document.getElementById("m-name").value = "";
+        document.getElementById("m-ip").value = "";
+
+        // refresh from DB so the new entry appears
+        await loadServers();
+
+      } catch (err) {
+        alert("Failed to save server. Is the backend running?");
+      } finally {
+        saveBtn.disabled = false;
+        saveBtn.textContent = "Save";
+      }
+    }
+
+    // close modal on Escape
+    document.addEventListener("keydown", e => { if (e.key === "Escape") closeModal(); });
+
+    // ── INIT ──
+    loadServers();
+  </script>
+</body>
+
+</html>

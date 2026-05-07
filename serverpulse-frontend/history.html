@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ServerPulse — History</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap"
+    rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #f5f3ef;
+      --surface: #fdfcfb;
+      --border: #e8e4dc;
+      --text-1: #2c2a26;
+      --text-2: #7a7670;
+      --text-3: #b0aca4;
+      --sage: #a8c5b0;
+      --sage-bg: #eaf2ec;
+      --sage-dark: #4a7c5a;
+      --blush: #e8b4b0;
+      --blush-bg: #fceeed;
+      --blush-dark: #9c4a45;
+      --butter: #e8d28a;
+      --butter-bg: #fdf7e3;
+      --butter-dark: #8a6e20;
+      --lavender-bg: #f0ecf8;
+      --lavender: #c4b8d8;
+      --sky-bg: #e8f2f8;
+      --sky: #a8c4d8;
+      --sky-dark: #2e6080;
+      --radius-sm: 10px;
+      --radius-md: 16px;
+      --radius-lg: 22px;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text-1);
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      width: 200px;
+      min-height: 100vh;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      padding: 28px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 36px;
+      position: sticky;
+      top: 0;
+      align-self: flex-start;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-dot {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: var(--sage-bg);
+      border: 1.5px solid var(--sage);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .logo-dot::after {
+      content: '';
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--sage-dark);
+      animation: blink 2s ease-in-out infinite;
+    }
+
+    @keyframes blink {
+
+      0%,
+      100% {
+        opacity: 1;
+        transform: scale(1)
+      }
+
+      50% {
+        opacity: 0.4;
+        transform: scale(0.75)
+      }
+    }
+
+    .logo-text {
+      font-size: 15px;
+      font-weight: 500;
+      letter-spacing: -0.3px;
+    }
+
+    .nav {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 12px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-size: 13.5px;
+      color: var(--text-2);
+      transition: background 0.15s, color 0.15s;
+    }
+
+    .nav-item:hover {
+      background: var(--bg);
+      color: var(--text-1);
+    }
+
+    .nav-item.active {
+      background: var(--sage-bg);
+      color: var(--sage-dark);
+      font-weight: 500;
+    }
+
+    .nav-icon {
+      width: 16px;
+      height: 16px;
+      opacity: 0.75;
+    }
+
+    .sidebar-footer {
+      margin-top: auto;
+      font-size: 11px;
+      color: var(--text-3);
+      line-height: 1.7;
+    }
+
+    .live-dot {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--sage-dark);
+      margin-right: 5px;
+      vertical-align: middle;
+      animation: blink 2s ease-in-out infinite;
+    }
+
+    /* ── MAIN ── */
+    .main {
+      flex: 1;
+      padding: 32px 36px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+      overflow-x: hidden;
+    }
+
+    /* ── TOPBAR ── */
+    .topbar {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+    }
+
+    .page-title {
+      font-size: 20px;
+      font-weight: 500;
+      letter-spacing: -0.4px;
+    }
+
+    .page-sub {
+      font-size: 12.5px;
+      color: var(--text-3);
+      margin-top: 4px;
+    }
+
+    .logout-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-2);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 6px 12px;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+    }
+
+    .logout-btn:hover {
+      background: var(--blush-bg);
+      color: var(--blush-dark);
+      border-color: var(--blush);
+    }
+
+    /* ── CONTROLS ── */
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px 18px;
+    }
+
+    .controls label {
+      font-size: 12px;
+      color: var(--text-3);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .styled-select {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      color: var(--text-1);
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 8px 28px 8px 12px;
+      outline: none;
+      cursor: pointer;
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='none'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23b0aca4' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      transition: border-color 0.15s;
+      min-width: 160px;
+    }
+
+    .styled-select:focus {
+      border-color: var(--sage);
+    }
+
+    .controls-right {
+      margin-left: auto;
+      display: flex;
+      gap: 8px;
+    }
+
+    .range-btn {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      padding: 6px 13px;
+      border-radius: 20px;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text-2);
+      transition: all 0.15s;
+    }
+
+    .range-btn:hover {
+      background: var(--surface);
+    }
+
+    .range-btn.active {
+      background: var(--sage-bg);
+      color: var(--sage-dark);
+      border-color: var(--sage);
+    }
+
+    /* ── SECTION HEADER ── */
+    .section-head {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-1);
+    }
+
+    .section-badge {
+      font-size: 10.5px;
+      padding: 2px 9px;
+      border-radius: 20px;
+      background: var(--border);
+      color: var(--text-2);
+      font-family: 'DM Mono', monospace;
+    }
+
+    /* ── CHART GRID ── */
+    .chart-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .chart-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+    }
+
+    .chart-card-header {
+      margin-bottom: 14px;
+    }
+
+    .chart-label {
+      font-size: 11px;
+      color: var(--text-3);
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+    }
+
+    .chart-current {
+      font-size: 24px;
+      font-weight: 300;
+      font-family: 'DM Mono', monospace;
+      letter-spacing: -0.5px;
+      margin-top: 3px;
+    }
+
+    .chart-current span {
+      font-size: 12px;
+      color: var(--text-3);
+      font-weight: 400;
+      margin-left: 2px;
+    }
+
+    .chart-wrap {
+      position: relative;
+      height: 120px;
+    }
+
+    /* ── TIMELINE ── */
+    .timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .timeline-item {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      padding: 12px 0;
+      position: relative;
+    }
+
+    .timeline-item:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      left: 15px;
+      top: 38px;
+      width: 1px;
+      bottom: -12px;
+      background: var(--border);
+    }
+
+    .tl-dot {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 600;
+      z-index: 1;
+    }
+
+    .tl-dot.metric {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      color: var(--text-3);
+      font-size: 9px;
+      font-family: 'DM Mono', monospace;
+    }
+
+    .tl-dot.alert-crit {
+      background: var(--blush-bg);
+      border: 1.5px solid var(--blush);
+      color: var(--blush-dark);
+    }
+
+    .tl-dot.alert-warn {
+      background: var(--butter-bg);
+      border: 1.5px solid var(--butter);
+      color: var(--butter-dark);
+    }
+
+    .tl-dot.resolved {
+      background: var(--sage-bg);
+      border: 1.5px solid var(--sage);
+      color: var(--sage-dark);
+    }
+
+    .tl-content {
+      flex: 1;
+      padding-top: 4px;
+    }
+
+    .tl-top {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .tl-time {
+      font-size: 10.5px;
+      font-family: 'DM Mono', monospace;
+      color: var(--text-3);
+    }
+
+    .tl-label {
+      font-size: 13px;
+      color: var(--text-1);
+    }
+
+    .tl-label b {
+      font-weight: 500;
+    }
+
+    .tl-meta {
+      font-size: 11.5px;
+      color: var(--text-2);
+      margin-top: 2px;
+    }
+
+    .pill-sm {
+      font-size: 9.5px;
+      padding: 1.5px 7px;
+      border-radius: 20px;
+      font-weight: 500;
+    }
+
+    .pill-crit {
+      background: var(--blush-bg);
+      color: var(--blush-dark);
+      border: 1px solid var(--blush);
+    }
+
+    .pill-warn {
+      background: var(--butter-bg);
+      color: var(--butter-dark);
+      border: 1px solid var(--butter);
+    }
+
+    .pill-ok {
+      background: var(--sage-bg);
+      color: var(--sage-dark);
+      border: 1px solid var(--sage);
+    }
+
+    .pill-type {
+      background: var(--lavender-bg);
+      color: #6e5d8c;
+      border: 1px solid var(--lavender);
+      font-family: 'DM Mono', monospace;
+      text-transform: uppercase;
+    }
+
+    /* ── ALERT HISTORY TABLE ── */
+    .alert-table {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+
+    .table-row {
+      display: grid;
+      grid-template-columns: 130px 1fr 90px 90px 90px 80px;
+      gap: 12px;
+      align-items: center;
+      padding: 13px 20px;
+      border-bottom: 1px solid var(--border);
+      font-size: 12.5px;
+    }
+
+    .table-row:last-child {
+      border-bottom: none;
+    }
+
+    .table-row.header {
+      font-size: 10.5px;
+      color: var(--text-3);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      background: var(--bg);
+      font-weight: 500;
+    }
+
+    .table-row:not(.header):hover {
+      background: var(--bg);
+    }
+
+    .col-server {
+      font-family: 'DM Mono', monospace;
+      font-weight: 500;
+      color: var(--text-1);
+    }
+
+    .col-msg {
+      color: var(--text-2);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .col-time {
+      font-family: 'DM Mono', monospace;
+      color: var(--text-3);
+      font-size: 11px;
+    }
+
+    .col-dur {
+      font-family: 'DM Mono', monospace;
+      color: var(--text-2);
+      font-size: 11px;
+    }
+
+    /* ── EMPTY STATE ── */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-3);
+    }
+
+    .empty-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: var(--sage-bg);
+      border: 1.5px dashed var(--sage);
+      margin: 0 auto 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .empty-state p {
+      font-size: 13.5px;
+      color: var(--text-2);
+      margin-top: 4px;
+    }
+
+    .empty-state small {
+      font-size: 11.5px;
+      opacity: 0.7;
+    }
+
+    /* ── LOADING ── */
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: var(--text-3);
+      font-size: 13px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ── SIDEBAR ── -->
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="logo-dot"></div>
+      <span class="logo-text">ServerPulse</span>
+    </div>
+    <nav class="nav">
+      <div class="nav-item" onclick="go('index.html')">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
+          <rect x="1" y="1" width="6" height="6" rx="1.5" fill="currentColor" opacity="0.9" />
+          <rect x="9" y="1" width="6" height="6" rx="1.5" fill="currentColor" opacity="0.5" />
+          <rect x="1" y="9" width="6" height="6" rx="1.5" fill="currentColor" opacity="0.5" />
+          <rect x="9" y="9" width="6" height="6" rx="1.5" fill="currentColor" opacity="0.5" />
+        </svg>
+        Dashboard
+      </div>
+      <div class="nav-item" onclick="go('servers.html')">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
+          <rect x="1" y="3" width="14" height="10" rx="2" stroke="currentColor" stroke-width="1.5" />
+          <path d="M5 7h6M5 9.5h4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" />
+        </svg>
+        Servers
+      </div>
+      <div class="nav-item" onclick="go('alerts.html')">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
+          <path d="M8 2v3M8 11v3M2 8h3M11 8h3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+          <circle cx="8" cy="8" r="3" stroke="currentColor" stroke-width="1.5" />
+        </svg>
+        Alerts
+      </div>
+      <div class="nav-item active" onclick="go('history.html')">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
+          <circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.5" />
+          <path d="M8 5v3l2 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+        </svg>
+        History
+      </div>
+      <div class="nav-item" onclick="go('settings.html')">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
+          <circle cx="8" cy="5" r="2.5" stroke="currentColor" stroke-width="1.5" />
+          <path d="M2.5 13c0-2.485 2.462-4.5 5.5-4.5s5.5 2.015 5.5 4.5" stroke="currentColor" stroke-width="1.5"
+            stroke-linecap="round" />
+        </svg>
+        Settings
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <span class="live-dot"></span>Live · every 5s
+    </div>
+  </aside>
+
+  <!-- ── MAIN ── -->
+  <main class="main">
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <div>
+        <div class="page-title">History</div>
+        <div class="page-sub" id="page-sub">Select a server to view its history</div>
+      </div>
+      <button class="logout-btn" onclick="logout()">
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
+          <path d="M6 2H3a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3M11 11l3-3-3-3M14 8H6" stroke="currentColor"
+            stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+        Logout
+      </button>
+    </div>
+
+    <!-- CONTROLS -->
+    <div class="controls">
+      <label>Server</label>
+      <select class="styled-select" id="serverSelect" onchange="onServerChange()">
+        <option value="">— select server —</option>
+      </select>
+      <div class="controls-right">
+        <button class="range-btn" onclick="setRange('1h', this)">1H</button>
+        <button class="range-btn active" onclick="setRange('24h', this)">24H</button>
+        <button class="range-btn" onclick="setRange('7d', this)">7D</button>
+        <button class="range-btn" onclick="setRange('30d', this)">30D</button>
+      </div>
+    </div>
+
+    <!-- CHARTS -->
+    <div id="chartsSection" style="display:none;">
+      <div class="section-head">
+        <span class="section-title">Metrics</span>
+        <span class="section-badge" id="metrics-count">—</span>
+      </div>
+      <div class="chart-grid">
+        <div class="chart-card">
+          <div class="chart-card-header">
+            <div class="chart-label">CPU Usage</div>
+            <div class="chart-current" id="cpu-current">—<span>%</span></div>
+          </div>
+          <div class="chart-wrap"><canvas id="cpuChart"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-card-header">
+            <div class="chart-label">RAM Usage</div>
+            <div class="chart-current" id="ram-current">—<span>%</span></div>
+          </div>
+          <div class="chart-wrap"><canvas id="ramChart"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-card-header">
+            <div class="chart-label">Disk Usage</div>
+            <div class="chart-current" id="disk-current">—<span>%</span></div>
+          </div>
+          <div class="chart-wrap"><canvas id="diskChart"></canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TIMELINE -->
+    <div id="timelineSection" style="display:none;">
+      <div class="section-head">
+        <span class="section-title">Combined Timeline</span>
+        <span class="section-badge" id="timeline-count">—</span>
+        <div style="margin-left:auto;display:flex;gap:6px;">
+          <button class="range-btn active" id="sort-desc" onclick="setSort('desc')"
+            style="font-size:11.5px;padding:5px 12px;">Recent first</button>
+          <button class="range-btn" id="sort-asc" onclick="setSort('asc')"
+            style="font-size:11.5px;padding:5px 12px;">Oldest first</button>
+        </div>
+      </div>
+      <div id="timelineList" class="timeline"></div>
+    </div>
+
+    <!-- ALERT HISTORY TABLE -->
+    <div id="alertSection" style="display:none;">
+      <div class="section-head">
+        <span class="section-title">Alert History</span>
+        <span class="section-badge" id="alert-count">—</span>
+      </div>
+      <div class="alert-table">
+        <div class="table-row header">
+          <span>Server</span>
+          <span>Message</span>
+          <span>Type</span>
+          <span>Triggered</span>
+          <span>Resolved</span>
+          <span>Duration</span>
+        </div>
+        <div id="alertTableBody"></div>
+      </div>
+    </div>
+
+    <!-- EMPTY STATE (initial) -->
+    <div id="emptyState">
+      <div class="empty-state">
+        <div class="empty-icon">◷</div>
+        <p>No server selected</p>
+        <small>Pick a server from the dropdown to explore its history</small>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    // ── AUTH ──
+    const token = localStorage.getItem("token");
+    if (!token) window.location.href = "auth.html";
+
+    function logout() { localStorage.removeItem("token"); window.location.href = "auth.html"; }
+    function go(page) { window.location.href = page; }
+
+    // ── STATE ──
+    let range = "24h";
+    let sortOrder = "desc";   // "desc" = recent first, "asc" = oldest first
+    let lastMetrics = [];
+    let lastAlerts = [];
+    let cpuChart, ramChart, diskChart;
+
+    // ── SORT TOGGLE ──
+    function setSort(order) {
+      sortOrder = order;
+      document.getElementById("sort-desc").classList.toggle("active", order === "desc");
+      document.getElementById("sort-asc").classList.toggle("active", order === "asc");
+      renderTimeline(lastMetrics, lastAlerts);
+    }
+
+    // ── RANGE LABELS ──
+    const rangeLabel = { '1h': 'Last hour', '24h': 'Last 24 hours', '7d': 'Last 7 days', '30d': 'Last 30 days' };
+
+    // ── RANGE BUTTONS ──
+    function setRange(r, btn) {
+      range = r;
+
+      document.querySelectorAll(".range-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+
+      const sel = document.getElementById("serverSelect").value;
+      if (sel) loadAll(sel);
+    }
+
+    // ── POPULATE SERVER DROPDOWN ──
+    async function loadServerList() {
+      // pull from URL param first
+      const urlServer = new URLSearchParams(window.location.search).get("server");
+
+      try {
+        const res = await fetch("http://localhost:5000/servers", { headers: { Authorization: token } });
+        const data = await res.json();
+        const sel = document.getElementById("serverSelect");
+
+        data.forEach(s => {
+          const opt = document.createElement("option");
+          opt.value = s.name; opt.textContent = s.name;
+          sel.appendChild(opt);
+        });
+
+        if (urlServer) {
+          sel.value = urlServer;
+          loadAll(urlServer);
+        }
+      } catch { }
+    }
+
+    function onServerChange() {
+      const sel = document.getElementById("serverSelect").value;
+      if (sel) loadAll(sel);
+    }
+
+    // ── LOAD EVERYTHING ──
+    async function loadAll(serverId) {
+      document.getElementById("emptyState").style.display = "none";
+      document.getElementById("chartsSection").style.display = "none";
+      document.getElementById("timelineSection").style.display = "none";
+      document.getElementById("alertSection").style.display = "none";
+      document.getElementById("page-sub").textContent = `Loading history for ${serverId}…`;
+
+      const [metrics, alerts] = await Promise.all([
+        fetchMetrics(serverId),
+        fetchAlertHistory(serverId)
+      ]);
+
+      if (metrics.length) { lastMetrics = metrics; renderCharts(metrics); }
+      if (alerts.length || metrics.length) { lastAlerts = alerts; renderTimeline(metrics, alerts); }
+      if (alerts.length) renderAlertTable(alerts);
+
+      document.getElementById("page-sub").innerHTML =
+        `<b>${serverId}</b> · ${rangeLabel[range]} · ${metrics.length} data points · ${alerts.length} alerts`;
+    }
+
+    async function fetchMetrics(serverId) {
+      try {
+        const res = await fetch(`http://localhost:5000/metrics/history/${serverId}?range=${range}`, {
+          headers: { Authorization: token }
+        });
+        return await res.json();
+      } catch { return []; }
+    }
+
+    async function fetchAlertHistory(serverId) {
+      try {
+        const res = await fetch(`http://localhost:5000/metrics/alerts/history?serverId=${serverId}`, {
+          headers: { Authorization: token }
+        });
+        return await res.json();
+      } catch { return []; }
+    }
+
+    // ── CHARTS ──
+    const chartDefaults = {
+      type: "line",
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        animation: { duration: 400 },
+        plugins: {
+          legend: { display: false }, tooltip: {
+            backgroundColor: "#2c2a26", titleFont: { family: "DM Mono", size: 11 },
+            bodyFont: { family: "DM Mono", size: 11 }, padding: 10, cornerRadius: 8,
+            callbacks: { label: ctx => ` ${ctx.parsed.y.toFixed(1)}%` }
+          }
+        },
+        scales: {
+          x: { display: false },
+          y: {
+            min: 0, max: 100,
+            grid: { color: "#e8e4dc" },
+            ticks: { font: { family: "DM Mono", size: 10 }, color: "#b0aca4", callback: v => v + "%" }
+          }
+        },
+        elements: { point: { radius: 0, hoverRadius: 4 }, line: { tension: 0.4 } }
+      }
+    };
+
+    function makeDataset(color, data) {
+      return {
+        data, borderColor: color, borderWidth: 2, fill: true,
+        backgroundColor: color.replace(")", ", 0.08)").replace("rgb", "rgba")
+      };
+    }
+
+    function renderCharts(metrics) {
+      const labels = metrics.map(d => {
+        const date = new Date(d.timestamp);
+        if (range === '7d' || range === '30d') {
+          return date.toLocaleDateString([], { month: 'short', day: 'numeric' }) + ' ' +
+            date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+        return date.toLocaleTimeString();
+      });
+      const cpu = metrics.map(d => d.cpu);
+      const ram = metrics.map(d => ((d.ramUsed / d.ramTotal) * 100));
+      const disk = metrics.map(d => ((d.diskUsed / d.diskTotal) * 100));
+
+      // update current values
+      const last = metrics[metrics.length - 1];
+      document.getElementById("cpu-current").innerHTML = `${cpu[cpu.length - 1].toFixed(1)}<span>%</span>`;
+      document.getElementById("ram-current").innerHTML = `${ram[ram.length - 1].toFixed(1)}<span>%</span>`;
+      document.getElementById("disk-current").innerHTML = `${disk[disk.length - 1].toFixed(1)}<span>%</span>`;
+      document.getElementById("metrics-count").textContent = `${metrics.length} records`;
+
+      if (cpuChart) cpuChart.destroy();
+      if (ramChart) ramChart.destroy();
+      if (diskChart) diskChart.destroy();
+
+      cpuChart = new Chart(document.getElementById("cpuChart"), { ...chartDefaults, data: { labels, datasets: [makeDataset("rgb(168, 197, 176)", cpu)] } });
+      ramChart = new Chart(document.getElementById("ramChart"), { ...chartDefaults, data: { labels, datasets: [makeDataset("rgb(232, 210, 138)", ram)] } });
+      diskChart = new Chart(document.getElementById("diskChart"), { ...chartDefaults, data: { labels, datasets: [makeDataset("rgb(196, 184, 216)", disk)] } });
+
+      document.getElementById("chartsSection").style.display = "block";
+    }
+
+    function formatTime(date) {
+      if (range === '7d' || range === '30d') {
+        return date.toLocaleDateString([], { month: 'short', day: 'numeric' }) + ' ' +
+          date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      }
+      return date.toLocaleTimeString();
+    }
+
+    // ── TIMELINE ──
+    function renderTimeline(metrics, alerts) {
+      // sample every Nth metric so timeline isn't overwhelming
+      const step = Math.max(1, Math.floor(metrics.length / 20));
+      const sampledMetrics = metrics.filter((_, i) => i % step === 0 || i === metrics.length - 1);
+
+      // merge metrics + alerts into one sorted list
+      const events = [
+        ...sampledMetrics.map(m => ({
+          type: "metric", time: new Date(m.timestamp),
+          cpu: m.cpu, ram: ((m.ramUsed / m.ramTotal) * 100), disk: ((m.diskUsed / m.diskTotal) * 100)
+        })),
+        ...alerts.map(a => ({
+          type: a.isResolved ? "resolved" : "alert",
+          alertType: a.type, severity: a.severity,
+          message: a.message, time: new Date(a.createdAt),
+          resolvedAt: a.resolvedAt ? new Date(a.resolvedAt) : null,
+          duration: a.resolvedAt ? Math.round((new Date(a.resolvedAt) - new Date(a.createdAt)) / 60000) : null
+        }))
+      ].sort((a, b) => sortOrder === "desc" ? b.time - a.time : a.time - b.time);
+
+      document.getElementById("timeline-count").textContent = `${events.length} events`;
+
+      const list = document.getElementById("timelineList");
+      list.innerHTML = events.map(e => {
+        if (e.type === "metric") {
+          const dominant = e.cpu > 85 || e.ram > 85 ? "🔴" : e.cpu > 70 || e.ram > 70 ? "🟡" : "·";
+          return `
+          <div class="timeline-item">
+            <div class="tl-dot metric">${dominant}</div>
+            <div class="tl-content">
+              <div class="tl-top">
+                <span class="tl-time">${formatTime(e.time)}</span>
+              </div>
+              <div class="tl-meta">CPU ${e.cpu.toFixed(1)}% · RAM ${e.ram.toFixed(1)}% · Disk ${e.disk.toFixed(1)}%</div>
+            </div>
+          </div>`;
+        }
+        if (e.type === "alert") {
+          const dotClass = e.severity === "critical" ? "alert-crit" : "alert-warn";
+          const pillClass = e.severity === "critical" ? "pill-crit" : "pill-warn";
+          return `
+          <div class="timeline-item">
+            <div class="tl-dot ${dotClass}">!</div>
+            <div class="tl-content">
+              <div class="tl-top">
+                <span class="tl-time">${formatTime(e.time)}</span>
+                <span class="pill-sm ${pillClass}">${e.severity}</span>
+                ${e.alertType ? `<span class="pill-sm pill-type">${e.alertType}</span>` : ""}
+              </div>
+              <div class="tl-label"><b>Alert triggered</b> — ${e.message}</div>
+            </div>
+          </div>`;
+        }
+        if (e.type === "resolved") {
+          const dur = e.duration !== null ? ` · resolved in ${e.duration}m` : "";
+          return `
+          <div class="timeline-item">
+            <div class="tl-dot resolved">✓</div>
+            <div class="tl-content">
+              <div class="tl-top">
+                <span class="tl-time">${formatTime(e.time)}</span>
+                <span class="pill-sm pill-ok">resolved</span>
+                ${e.alertType ? `<span class="pill-sm pill-type">${e.alertType}</span>` : ""}
+              </div>
+              <div class="tl-label"><b>Alert resolved</b>${dur}</div>
+            </div>
+          </div>`;
+        }
+      }).join("");
+
+      document.getElementById("timelineSection").style.display = "block";
+    }
+
+    // ── ALERT TABLE ──
+    function renderAlertTable(alerts) {
+      document.getElementById("alert-count").textContent = `${alerts.length} total`;
+
+      const body = document.getElementById("alertTableBody");
+
+      if (alerts.length === 0) {
+        body.innerHTML = `<div class="empty-state" style="padding:40px"><div class="empty-icon">✦</div><p>No alert history</p></div>`;
+      } else {
+        body.innerHTML = alerts.map(a => {
+          const created = new Date(a.createdAt).toLocaleString();
+          const resolved = a.resolvedAt ? new Date(a.resolvedAt).toLocaleString() : "—";
+          const durMin = a.resolvedAt ? Math.round((new Date(a.resolvedAt) - new Date(a.createdAt)) / 60000) : null;
+          const dur = durMin !== null ? `${durMin}m` : "active";
+          const sevPill = a.severity === "critical"
+            ? `<span class="pill-sm pill-crit">critical</span>`
+            : `<span class="pill-sm pill-warn">warning</span>`;
+
+          return `
+          <div class="table-row">
+            <span class="col-server">${a.serverId}</span>
+            <span class="col-msg">${a.message}</span>
+            <span>${a.type ? `<span class="pill-sm pill-type">${a.type}</span>` : "—"}</span>
+            <span class="col-time">${created}</span>
+            <span class="col-time">${resolved}</span>
+            <span class="col-dur">${dur}</span>
+          </div>`;
+        }).join("");
+      }
+
+      document.getElementById("alertSection").style.display = "block";
+    }
+
+    // ── INIT ──
+    loadServerList();
+  </script>
+</body>
+
+</html>

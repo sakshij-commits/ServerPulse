@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ServerPulse — Alerts</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap"
+    rel="stylesheet" />
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #f5f3ef;
+      --surface: #fdfcfb;
+      --border: #e8e4dc;
+      --text-1: #2c2a26;
+      --text-2: #7a7670;
+      --text-3: #b0aca4;
+      --sage: #a8c5b0;
+      --sage-bg: #eaf2ec;
+      --sage-dark: #4a7c5a;
+      --blush: #e8b4b0;
+      --blush-bg: #fceeed;
+      --blush-dark: #9c4a45;
+      --butter: #e8d28a;
+      --butter-bg: #fdf7e3;
+      --butter-dark: #8a6e20;
+      --lavender-bg: #f0ecf8;
+      --lavender: #c4b8d8;
+      --radius-sm: 10px;
+      --radius-md: 16px;
+      --radius-lg: 22px;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text-1);
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      width: 200px;
+      min-height: 100vh;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      padding: 28px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 36px;
+      position: sticky;
+      top: 0;
+      align-self: flex-start;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-dot {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: var(--sage-bg);
+      border: 1.5px solid var(--sage);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .logo-dot::after {
+      content: '';
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--sage-dark);
+      animation: blink 2s ease-in-out infinite;
+    }
+
+    @keyframes blink {
+
+      0%,
+      100% {
+        opacity: 1;
+        transform: scale(1)
+      }
+
+      50% {
+        opacity: 0.4;
+        transform: scale(0.75)
+      }
+    }
+
+    .logo-text {
+      font-size: 15px;
+      font-weight: 500;
+      letter-spacing: -0.3px;
+    }
+
+    .nav {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 12px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-size: 13.5px;
+      color: var(--text-2);
+      transition: background 0.15s, color 0.15s;
+    }
+
+    .nav-item:hover {
+      background: var(--bg);
+      color: var(--text-1);
+    }
+
+    .nav-item.active {
+      background: var(--sage-bg);
+      color: var(--sage-dark);
+      font-weight: 500;
+    }
+
+    .nav-icon {
+      width: 16px;
+      height: 16px;
+      opacity: 0.75;
+    }
+
+    .sidebar-footer {
+      margin-top: auto;
+      font-size: 11px;
+      color: var(--text-3);
+      line-height: 1.7;
+    }
+
+    .live-dot {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--sage-dark);
+      margin-right: 5px;
+      vertical-align: middle;
+      animation: blink 2s ease-in-out infinite;
+    }
+
+    /* ── MAIN ── */
+    .main {
+      flex: 1;
+      padding: 32px 36px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    /* ── TOPBAR ── */
+    .topbar {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+    }
+
+    .page-title {
+      font-size: 20px;
+      font-weight: 500;
+      letter-spacing: -0.4px;
+    }
+
+    .page-sub {
+      font-size: 12.5px;
+      color: var(--text-3);
+      margin-top: 4px;
+    }
+
+    .page-sub b {
+      color: var(--text-2);
+      font-weight: 500;
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logout-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-2);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 6px 12px;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+    }
+
+    .logout-btn:hover {
+      background: var(--blush-bg);
+      color: var(--blush-dark);
+      border-color: var(--blush);
+    }
+
+    /* ── STAT PILLS (summary row) ── */
+    .summary-row {
+      display: flex;
+      gap: 12px;
+    }
+
+    .summary-pill {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 110px;
+    }
+
+    .summary-pill .s-label {
+      font-size: 10.5px;
+      color: var(--text-3);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .summary-pill .s-val {
+      font-size: 22px;
+      font-weight: 300;
+      font-family: 'DM Mono', monospace;
+      letter-spacing: -0.5px;
+    }
+
+    .summary-pill.crit {
+      border-color: var(--blush);
+      background: var(--blush-bg);
+    }
+
+    .summary-pill.crit .s-val {
+      color: var(--blush-dark);
+    }
+
+    .summary-pill.warn {
+      border-color: var(--butter);
+      background: var(--butter-bg);
+    }
+
+    .summary-pill.warn .s-val {
+      color: var(--butter-dark);
+    }
+
+    .summary-pill.resolved .s-val {
+      color: var(--sage-dark);
+    }
+
+    /* ── FILTER BAR ── */
+    .filter-bar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .filter-btn {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12.5px;
+      font-weight: 500;
+      padding: 7px 14px;
+      border-radius: 20px;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text-2);
+      transition: all 0.15s;
+    }
+
+    .filter-btn:hover {
+      background: var(--bg);
+      color: var(--text-1);
+    }
+
+    .filter-btn.active-filter {
+      background: var(--sage-bg);
+      color: var(--sage-dark);
+      border-color: var(--sage);
+    }
+
+    .filter-btn.crit-filter.active-filter {
+      background: var(--blush-bg);
+      color: var(--blush-dark);
+      border-color: var(--blush);
+    }
+
+    .filter-btn.warn-filter.active-filter {
+      background: var(--butter-bg);
+      color: var(--butter-dark);
+      border-color: var(--butter);
+    }
+
+    .filter-btn.res-filter.active-filter {
+      background: var(--sage-bg);
+      color: var(--sage-dark);
+      border-color: var(--sage);
+    }
+
+    .filter-bar-right {
+      margin-left: auto;
+      font-size: 11.5px;
+      color: var(--text-3);
+      font-family: 'DM Mono', monospace;
+    }
+
+    /* ── ALERT LIST ── */
+    .alert-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    /* ── ALERT ITEM ── */
+    .alert-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 18px 20px;
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      transition: transform 0.15s, border-color 0.2s;
+      animation: slideIn 0.2s ease;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(6px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .alert-item:hover {
+      transform: translateX(2px);
+    }
+
+    .alert-item.critical {
+      border-left: 3px solid var(--blush-dark);
+    }
+
+    .alert-item.warning {
+      border-left: 3px solid var(--butter-dark);
+    }
+
+    .alert-item.resolved {
+      opacity: 0.6;
+    }
+
+    /* severity icon */
+    .alert-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 9px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+
+    .alert-icon.critical {
+      background: var(--blush-bg);
+      border: 1px solid var(--blush);
+    }
+
+    .alert-icon.warning {
+      background: var(--butter-bg);
+      border: 1px solid var(--butter);
+    }
+
+    .alert-icon.resolved {
+      background: var(--sage-bg);
+      border: 1px solid var(--sage);
+    }
+
+    /* content */
+    .alert-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .alert-top {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 4px;
+      flex-wrap: wrap;
+    }
+
+    .alert-server {
+      font-size: 13.5px;
+      font-weight: 500;
+      font-family: 'DM Mono', monospace;
+      color: var(--text-1);
+    }
+
+    .severity-pill {
+      font-size: 10px;
+      padding: 2px 8px;
+      border-radius: 20px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    .severity-pill.critical {
+      background: var(--blush-bg);
+      color: var(--blush-dark);
+      border: 1px solid var(--blush);
+    }
+
+    .severity-pill.warning {
+      background: var(--butter-bg);
+      color: var(--butter-dark);
+      border: 1px solid var(--butter);
+    }
+
+    .severity-pill.resolved {
+      background: var(--sage-bg);
+      color: var(--sage-dark);
+      border: 1px solid var(--sage);
+    }
+
+    .type-pill {
+      font-size: 10px;
+      padding: 2px 8px;
+      border-radius: 20px;
+      background: var(--lavender-bg);
+      color: #6e5d8c;
+      border: 1px solid var(--lavender);
+      font-family: 'DM Mono', monospace;
+      text-transform: uppercase;
+    }
+
+    .alert-message {
+      font-size: 13px;
+      color: var(--text-2);
+      line-height: 1.5;
+    }
+
+    .alert-meta {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-top: 8px;
+    }
+
+    .alert-time {
+      font-size: 11px;
+      font-family: 'DM Mono', monospace;
+      color: var(--text-3);
+    }
+
+    .alert-resolved-at {
+      font-size: 11px;
+      color: var(--sage-dark);
+    }
+
+    /* resolve button */
+    .btn-resolve {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11.5px;
+      font-weight: 500;
+      color: var(--sage-dark);
+      background: var(--sage-bg);
+      border: 1px solid var(--sage);
+      border-radius: var(--radius-sm);
+      padding: 5px 12px;
+      cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
+      transition: opacity 0.15s;
+      align-self: center;
+    }
+
+    .btn-resolve:hover {
+      opacity: 0.8;
+    }
+
+    .btn-resolve:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    /* ── EMPTY STATE ── */
+    .empty-state {
+      text-align: center;
+      padding: 70px 20px;
+      color: var(--text-3);
+    }
+
+    .empty-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: var(--sage-bg);
+      border: 1.5px dashed var(--sage);
+      margin: 0 auto 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+    }
+
+    .empty-state p {
+      font-size: 14px;
+      color: var(--text-2);
+      margin-top: 4px;
+    }
+
+    .empty-state small {
+      font-size: 12px;
+      opacity: 0.7;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ── SIDEBAR ── -->
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="logo-dot"></div>
+      <span class="logo-text">ServerPulse</span>
+    </div>
+    <nav class="nav">
+      <div class="nav-item" onclick="go('index.html')">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
+          <rect x="1" y="1" width="6" height="6" rx="1.5" fill="currentColor" opacity="0.9" />
+          <rect x="9" y="1" width="6" height="6" rx="1.5" fill="currentColor" opacity="0.5" />
+          <rect x="1" y="9" width="6" height="6" rx="1.5" fill="currentColor" opacity="0.5" />
+          <rect x="9" y="9" width="6" height="6" rx="1.5" fill="currentColor" opacity="0.5" />
+        </svg>
+        Dashboard
+      </div>
+      <div class="nav-item" onclick="go('servers.html')">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
+          <rect x="1" y="3" width="14" height="10" rx="2" stroke="currentColor" stroke-width="1.5" />
+          <path d="M5 7h6M5 9.5h4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" />
+        </svg>
+        Servers
+      </div>
+      <div class="nav-item active" onclick="go('alerts.html')">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
+          <path d="M8 2v3M8 11v3M2 8h3M11 8h3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+          <circle cx="8" cy="8" r="3" stroke="currentColor" stroke-width="1.5" />
+        </svg>
+        Alerts
+      </div>
+      <div class="nav-item" onclick="go('history.html')">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
+          <circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.5" />
+          <path d="M8 5v3l2 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+        </svg>
+        History
+      </div>
+      <div class="nav-item" onclick="go('settings.html')">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
+          <circle cx="8" cy="5" r="2.5" stroke="currentColor" stroke-width="1.5" />
+          <path d="M2.5 13c0-2.485 2.462-4.5 5.5-4.5s5.5 2.015 5.5 4.5" stroke="currentColor" stroke-width="1.5"
+            stroke-linecap="round" />
+        </svg>
+        Settings
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <span class="live-dot"></span>Live · every 5s
+    </div>
+  </aside>
+
+  <!-- ── MAIN ── -->
+  <main class="main">
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <div>
+        <div class="page-title">Alerts</div>
+        <div class="page-sub" id="page-sub">Active issues across all servers</div>
+      </div>
+      <div class="topbar-right">
+        <button class="logout-btn" onclick="logout()">
+          <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
+            <path d="M6 2H3a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3M11 11l3-3-3-3M14 8H6" stroke="currentColor"
+              stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          Logout
+        </button>
+      </div>
+    </div>
+
+    <!-- SUMMARY ROW -->
+    <div class="summary-row">
+      <div class="summary-pill crit">
+        <span class="s-label">Critical</span>
+        <span class="s-val" id="count-critical">0</span>
+      </div>
+      <div class="summary-pill warn">
+        <span class="s-label">Warning</span>
+        <span class="s-val" id="count-warning">0</span>
+      </div>
+      <div class="summary-pill resolved">
+        <span class="s-label">Acknowledged</span>
+        <span class="s-val" id="count-resolved">0</span>
+      </div>
+    </div>
+
+    <!-- FILTER BAR -->
+    <div class="filter-bar">
+      <button class="filter-btn active-filter" onclick="setFilter('all')" id="f-all">All</button>
+      <button class="filter-btn crit-filter" onclick="setFilter('critical')" id="f-critical">Critical</button>
+      <button class="filter-btn warn-filter" onclick="setFilter('warning')" id="f-warning">Warning</button>
+      <button class="filter-btn res-filter" onclick="setFilter('resolved')" id="f-resolved">Acknowledged</button>
+      <span class="filter-bar-right" id="filter-count">—</span>
+    </div>
+
+    <!-- ALERT LIST -->
+    <div class="alert-list" id="alertList"></div>
+
+  </main>
+
+  <script>
+    // ── AUTH GUARD ──
+    const token = localStorage.getItem("token");
+    if (!token) window.location.href = "auth.html";
+
+    let userRole = "viewer";
+    try {
+      const payload = JSON.parse(atob(token.split(".")[1]));
+      userRole = payload.role || "viewer";
+    } catch { }
+
+    function logout() { localStorage.removeItem("token"); window.location.href = "auth.html"; }
+    function go(page) { window.location.href = page; }
+
+    // ── STATE ──
+    let alerts = [];
+    let currentFilter = "all";
+
+    // ── FILTER ──
+    function setFilter(f) {
+      currentFilter = f;
+      document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active-filter"));
+      document.getElementById("f-" + f).classList.add("active-filter");
+      render();
+    }
+
+    // ── FETCH ──
+    async function loadAlerts() {
+      try {
+        const res = await fetch("http://localhost:5000/metrics/alerts?all=true", {
+          headers: { Authorization: token }
+        });
+        alerts = await res.json();
+        updateSummary();
+        render();
+      } catch (err) {
+        console.warn("Could not load alerts:", err.message);
+      }
+    }
+
+    function updateSummary() {
+      document.getElementById("count-critical").textContent = alerts.filter(a => a.severity === "critical" && !a.isResolved).length;
+      document.getElementById("count-warning").textContent = alerts.filter(a => a.severity === "warning" && !a.isResolved).length;
+      document.getElementById("count-resolved").textContent = alerts.filter(a => a.isResolved).length;
+
+      const active = alerts.filter(a => !a.isResolved).length;
+      document.getElementById("page-sub").innerHTML =
+        active > 0
+          ? `<b>${active}</b> active issue${active !== 1 ? "s" : ""} across all servers`
+          : "All systems healthy";
+    }
+
+    // ── RENDER ──
+    function render() {
+      const list = document.getElementById("alertList");
+
+      const filtered = alerts.filter(a => {
+        if (currentFilter === "resolved") return a.isResolved;
+        if (currentFilter === "all") return true;
+        return !a.isResolved && a.severity === currentFilter;
+      });
+
+      document.getElementById("filter-count").textContent = `${filtered.length} shown`;
+
+      if (filtered.length === 0) {
+        list.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-icon">✦</div>
+          <p>${currentFilter === "resolved" ? "No acknowledged alerts yet" : "No alerts — all clear!"}</p>
+          <small>${currentFilter === "resolved" ? "Acknowledged alerts will appear here" : "ServerPulse will notify you when something needs attention"}</small>
+        </div>`;
+        return;
+      }
+
+      list.innerHTML = filtered.map(a => renderAlert(a)).join("");
+
+      // attach resolve listeners
+      list.querySelectorAll(".btn-resolve").forEach(btn => {
+        btn.addEventListener("click", () => resolveAlert(btn.dataset.id, btn));
+      });
+    }
+
+    function renderAlert(a) {
+      const icon = a.isResolved ? "✓" : a.severity === "critical" ? "!" : "▲";
+      const state = a.isResolved ? "resolved" : a.severity;
+      const when = new Date(a.createdAt).toLocaleString();
+      const resolvedAt = a.resolvedAt ? `Acknowledged ${new Date(a.resolvedAt).toLocaleString()}` : "";
+
+      const resolveBtn = (!a.isResolved && userRole === "admin")
+        ? `<button class="btn-resolve" data-id="${a._id}" title="Hide this alert temporarily">Acknowledge</button>`
+        : "";
+
+      return `
+      <div class="alert-item ${state}">
+        <div class="alert-icon ${state}">${icon}</div>
+        <div class="alert-content">
+          <div class="alert-top">
+            <span class="alert-server">${a.serverId}</span>
+            <span class="severity-pill ${state}">${state === "resolved" ? "acknowledged" : state}</span>
+            ${a.type ? `<span class="type-pill">${a.type}</span>` : ""}
+          </div>
+          <div class="alert-message">${a.message}</div>
+          <div class="alert-meta">
+            <span class="alert-time">${when}</span>
+            ${resolvedAt ? `<span class="alert-resolved-at">· ${resolvedAt}</span>` : ""}
+          </div>
+        </div>
+        ${resolveBtn}
+      </div>`;
+    }
+
+    // ── RESOLVE ──
+    async function resolveAlert(id, btn) {
+      btn.disabled = true;
+      btn.textContent = "Acknowledging…";
+      try {
+        await fetch(`http://localhost:5000/metrics/alerts/${id}/resolve`, {
+          method: "POST",
+          headers: { Authorization: token }
+        });
+        await loadAlerts();
+      } catch {
+        btn.disabled = false;
+        btn.textContent = "Acknowledge";
+      }
+    }
+
+    // ── INIT ──
+    loadAlerts();
+    setInterval(loadAlerts, 5000);
+  </script>
+</body>
+
+</html>

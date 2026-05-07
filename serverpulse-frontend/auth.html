@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ServerPulse — Login</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap"
+    rel="stylesheet" />
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #f5f3ef;
+      --surface: #fdfcfb;
+      --border: #e8e4dc;
+      --text-1: #2c2a26;
+      --text-2: #7a7670;
+      --text-3: #b0aca4;
+      --sage: #a8c5b0;
+      --sage-bg: #eaf2ec;
+      --sage-dark: #4a7c5a;
+      --blush: #e8b4b0;
+      --blush-bg: #fceeed;
+      --blush-dark: #9c4a45;
+      --radius-sm: 10px;
+      --radius-md: 16px;
+      --radius-lg: 22px;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text-1);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* subtle background dots */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: radial-gradient(var(--border) 1px, transparent 1px);
+      background-size: 28px 28px;
+      opacity: 0.5;
+      pointer-events: none;
+    }
+
+    .auth-wrap {
+      width: 360px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* logo at top */
+    .auth-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 4px;
+    }
+
+    .logo-dot {
+      width: 30px;
+      height: 30px;
+      border-radius: 9px;
+      background: var(--sage-bg);
+      border: 1.5px solid var(--sage);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .logo-dot::after {
+      content: '';
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--sage-dark);
+      animation: blink 2s ease-in-out infinite;
+    }
+
+    @keyframes blink {
+
+      0%,
+      100% {
+        opacity: 1;
+        transform: scale(1)
+      }
+
+      50% {
+        opacity: 0.4;
+        transform: scale(0.75)
+      }
+    }
+
+    .logo-text {
+      font-size: 17px;
+      font-weight: 500;
+      letter-spacing: -0.4px;
+    }
+
+    /* card */
+    .auth-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 32px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .auth-header {
+      text-align: center;
+    }
+
+    .auth-title {
+      font-size: 18px;
+      font-weight: 500;
+      letter-spacing: -0.3px;
+      color: var(--text-1);
+      margin-bottom: 4px;
+    }
+
+    .auth-sub {
+      font-size: 12.5px;
+      color: var(--text-3);
+    }
+
+    /* fields */
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .field label {
+      font-size: 11.5px;
+      color: var(--text-2);
+      font-weight: 500;
+      letter-spacing: 0.2px;
+    }
+
+    .field input {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13.5px;
+      color: var(--text-1);
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      outline: none;
+      transition: border-color 0.15s;
+      width: 100%;
+    }
+
+    .field input::placeholder {
+      color: var(--text-3);
+    }
+
+    .field input:focus {
+      border-color: var(--sage);
+      background: var(--surface);
+    }
+
+    /* name field hidden by default */
+    #nameField {
+      display: none;
+    }
+
+    /* submit button */
+    .btn-primary {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13.5px;
+      font-weight: 500;
+      color: var(--surface);
+      background: var(--sage-dark);
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: 11px;
+      cursor: pointer;
+      width: 100%;
+      transition: opacity 0.15s;
+    }
+
+    .btn-primary:hover {
+      opacity: 0.88;
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* toggle link */
+    .auth-toggle {
+      text-align: center;
+      font-size: 12.5px;
+      color: var(--text-3);
+    }
+
+    .auth-toggle span {
+      color: var(--sage-dark);
+      font-weight: 500;
+      cursor: pointer;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    .auth-toggle span:hover {
+      opacity: 0.75;
+    }
+
+    /* error/success message */
+    .auth-msg {
+      font-size: 12px;
+      padding: 10px 13px;
+      border-radius: var(--radius-sm);
+      display: none;
+      text-align: center;
+    }
+
+    .auth-msg.error {
+      background: var(--blush-bg);
+      color: var(--blush-dark);
+      border: 1px solid var(--blush);
+      display: block;
+    }
+
+    .auth-msg.success {
+      background: var(--sage-bg);
+      color: var(--sage-dark);
+      border: 1px solid var(--sage);
+      display: block;
+    }
+
+    /* footer hint */
+    .auth-footer {
+      text-align: center;
+      font-size: 11px;
+      color: var(--text-3);
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="auth-wrap">
+
+    <div class="auth-logo">
+      <div class="logo-dot"></div>
+      <span class="logo-text">ServerPulse</span>
+    </div>
+
+    <div class="auth-card">
+
+      <div class="auth-header">
+        <div class="auth-title" id="authTitle">Welcome back</div>
+        <div class="auth-sub" id="authSub">Sign in to your dashboard</div>
+      </div>
+
+      <div id="nameField" class="field">
+        <label>Name</label>
+        <input id="name" type="text" placeholder="Your name" />
+      </div>
+
+      <div class="field">
+        <label>Email</label>
+        <input id="email" type="email" placeholder="you@example.com" />
+      </div>
+
+      <div class="field">
+        <label>Password</label>
+        <input id="password" type="password" placeholder="••••••••" />
+      </div>
+
+      <div class="auth-msg" id="authMsg"></div>
+
+      <button class="btn-primary" id="submitBtn" onclick="handleSubmit()">Sign in</button>
+
+      <div class="auth-toggle">
+        <span id="toggleText" onclick="toggle()">Don't have an account? Register</span>
+      </div>
+
+    </div>
+
+    <div class="auth-footer">
+      ServerPulse · Real-time Server Monitoring
+    </div>
+
+  </div>
+
+  <script>
+    let isRegister = false;
+
+    // if already logged in, go straight to dashboard
+    if (localStorage.getItem("token")) {
+      window.location.href = "index.html";
+    }
+
+    function toggle() {
+      isRegister = !isRegister;
+
+      document.getElementById("authTitle").textContent = isRegister ? "Create account" : "Welcome back";
+      document.getElementById("authSub").textContent = isRegister ? "Start monitoring today" : "Sign in to your dashboard";
+      document.getElementById("submitBtn").textContent = isRegister ? "Register" : "Sign in";
+      document.getElementById("toggleText").textContent = isRegister ? "Already have an account? Sign in" : "Don't have an account? Register";
+      document.getElementById("nameField").style.display = isRegister ? "flex" : "none";
+
+      showMsg("", "");
+    }
+
+    function showMsg(text, type) {
+      const el = document.getElementById("authMsg");
+      el.textContent = text;
+      el.className = "auth-msg" + (type ? " " + type : "");
+    }
+
+    function setLoading(loading) {
+      const btn = document.getElementById("submitBtn");
+      btn.disabled = loading;
+      btn.textContent = loading ? "Please wait…" : (isRegister ? "Register" : "Sign in");
+    }
+
+    async function handleSubmit() {
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+      const name = document.getElementById("name").value.trim();
+
+      if (!email || !password) { showMsg("Please fill in all fields.", "error"); return; }
+      if (isRegister && !name) { showMsg("Please enter your name.", "error"); return; }
+
+      setLoading(true);
+      showMsg("", "");
+
+      try {
+        if (isRegister) {
+          const res = await fetch("http://localhost:5000/auth/register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name, email, password })
+          });
+          const data = await res.json();
+
+          if (!res.ok) { showMsg(data.message || "Registration failed.", "error"); return; }
+
+          showMsg("Account created! Signing you in…", "success");
+          setTimeout(() => { isRegister = false; toggle(); }, 1000);
+
+        } else {
+          const res = await fetch("http://localhost:5000/auth/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password })
+          });
+          const data = await res.json();
+
+          if (!res.ok || !data.token) { showMsg(data.message || "Invalid credentials.", "error"); return; }
+
+          localStorage.setItem("token", data.token);
+          window.location.href = "index.html";
+        }
+
+      } catch (err) {
+        showMsg("Cannot reach server. Is the backend running?", "error");
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    // allow Enter key to submit
+    document.addEventListener("keydown", e => {
+      if (e.key === "Enter") handleSubmit();
+    });
+  </script>
+
+</body>
+
+</html>

@@ -1,0 +1,322 @@
+--> cd D:\ServerPulse\serverpulse-backend
+node server.js
+
+--> cd D:\ServerPulse\serverpulse-agent
+node agent.js
+
+--> localhost
+
+things to do --
+# 🐳 PHASE 7 — Dockerize Project
+
+## Backend
+
+* [ ] Dockerfile
+
+## Agent
+
+* [ ] Dockerfile
+
+## Full Stack
+
+* [ ] docker-compose.yml
+
+## Bonus
+
+* [ ] One-command startup:
+
+```bash
+docker-compose up
+```
+
+---
+
+# ⚙️ PHASE 8 — Jenkins CI/CD Pipeline
+
+## Jenkins Flow
+
+* [ ] Connect GitHub repo
+* [ ] Auto trigger on push
+* [ ] Install dependencies
+* [ ] Run tests
+* [ ] Build Docker image
+* [ ] Deploy backend
+* [ ] Restart containers
+
+## Show in Dashboard
+
+* [ ] Deployment started
+* [ ] CPU spike during deploy
+* [ ] Deployment success/fail badge
+
+👉 THIS PART = interview flex
+
+---
+
+# ☁️ PHASE 9 — AWS Deployment
+
+## Infra
+
+* [ ] Launch EC2
+* [ ] Install Node.js
+* [ ] Install Docker
+* [ ] Install Jenkins
+
+## Deploy
+
+* [ ] Backend on EC2
+* [ ] Agent on EC2
+* [ ] Public dashboard URL
+
+---
+
+# 🧠 PHASE 10 — Smart Monitoring Features
+
+## Real Monitoring Logic
+
+* [ ] Server offline detection
+* [ ] Heartbeat timeout
+* [ ] Auto reconnect agent
+
+## Analytics
+
+* [ ] Highest CPU server
+* [ ] Lowest uptime
+* [ ] Most frequent alerts
+
+## Nice Features
+
+* [ ] Dark mode toggle
+* [ ] Search servers
+* [ ] Filter by status
+* [ ] Multi-environment tags:
+
+  * dev
+  * prod
+  * staging
+
+---
+
+# 🏆 PHASE 11 — Final Polish
+
+* [ ] README.md
+* [ ] Screenshots
+* [ ] Architecture diagram
+* [ ] Demo video
+* [ ] Clean code comments
+* [ ] Resume bullet points
+* [ ] GitHub deploy instructions
+
+--- ##############################################################
+
+# 🚀 What next?
+
+🔥 Tiny improvements (high value, low effort)
+1. Better timestamps
+
+Right now:
+
+27/04/2026, 20:08:39
+
+Functional… but meh.
+
+Use:
+
+2 min ago
+Just now
+5 sec ago
+
+Example:
+
+function timeAgo(date) {
+  const sec = Math.floor((Date.now() - new Date(date)) / 1000);
+  if (sec < 60) return `${sec}s ago`;
+  if (sec < 3600) return `${Math.floor(sec/60)}m ago`;
+  return `${Math.floor(sec/3600)}h ago`;
+}
+
+Then show:
+
+${timeAgo(alert.createdAt)}
+
+👉 Massive UX glow-up.
+
+2. Severity badge on each alert
+
+Example:
+
+[CRITICAL]
+server-1
+RAM usage is 86.8%
+
+Makes scanning faster.
+
+3. Empty state
+
+If no alerts:
+
+✅ No active alerts
+All systems healthy
+
+Instead of blank box.
+
+4. Click to resolve later
+
+Future feature:
+
+[Resolve]
+
+Manual ack button.
+
+5. Subtle pulse animation for new critical alerts
+
+Tiny red pulse dot = premium feel.
+
+################################################################################3
+
+🏠 1. DASHBOARD (Home Page)
+🎯 Purpose:
+
+Quick overview of system health
+
+👀 Viewer POV
+
+Sees:
+
+Total servers online
+Avg CPU / RAM
+Active alerts count
+Server cards (status)
+Live updates
+
+👉 Use case:
+
+“Is everything okay right now?”
+
+👑 Admin POV
+
+Same as viewer +:
+
+Quick alert summary
+Deployment status (later)
+Quick actions (restart server, etc.)
+🔥 Features
+KPI cards
+Server cards
+Critical highlight
+Live updates (Socket.io)
+🖥️ 2. SERVERS PAGE
+🎯 Purpose:
+
+Manage + inspect servers
+
+👀 Viewer POV
+List of all servers
+Status (online/offline)
+Basic metrics
+Click → detailed view
+
+👉 Use case:
+
+“Which server is acting weird?”
+
+👑 Admin POV
+
+Everything above +:
+
+➕ Add new server
+❌ Remove server
+✏️ Edit server details
+Enable/disable monitoring
+Tag servers (prod/dev)
+🔥 Features
+Server list table
+Search + filter
+Status badges
+Actions column (admin only)
+🚨 3. ALERTS PAGE
+🎯 Purpose:
+
+Central alert management
+
+👀 Viewer POV
+View active alerts
+Filter (critical / warning)
+See history of alerts
+Click → view details
+
+👉 Use case:
+
+“What’s broken right now?”
+
+👑 Admin POV
+
+Everything above +:
+
+✅ Resolve alert manually
+🔧 Configure thresholds
+🔔 Set alert rules
+📧 Email notification config
+🔥 Features
+Alert list (active + resolved)
+Severity filter
+Timeline
+Acknowledge/resolve button
+📈 4. HISTORY PAGE
+🎯 Purpose:
+
+Analyze past performance
+
+👀 Viewer POV
+Select server
+View CPU/RAM/Disk charts
+Time filters (1h / 24h / 7d)
+
+👉 Use case:
+
+“When did things go wrong?”
+
+👑 Admin POV
+
+Everything above +:
+
+Export data (CSV/PDF)
+Compare servers
+Deep analytics
+🔥 Features
+Charts (Chart.js)
+Server dropdown
+Time range filter
+Trend analysis
+⚙️ 5. SETTINGS PAGE
+🎯 Purpose:
+
+System configuration
+
+👀 Viewer POV
+Profile settings
+Theme (dark/light)
+👑 Admin POV
+
+This becomes POWERFUL:
+
+👥 User Management
+Add users
+Assign roles
+Remove users
+🔐 Auth Settings
+Password reset
+JWT config
+🚨 Alert Config
+CPU threshold
+RAM threshold
+Disk threshold
+⚙️ System Config
+Refresh interval
+Notification settings
+🔥 Features
+Tabs:
+Profile
+Users
+Alerts config
+System
