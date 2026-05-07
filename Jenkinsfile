@@ -6,7 +6,9 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t serverpulse-backend .'
+                dir('serverpulse-backend') {
+                    sh 'docker build -t serverpulse-backend .'
+                }
             }
         }
 
@@ -19,7 +21,7 @@ pipeline {
                 docker run -d -p 5000:5000 \
                 --restart unless-stopped \
                 --name serverpulse-api \
-                --env-file ./serverpulse-backend/.env \
+                --env-file /var/lib/jenkins/workspace/ServerPulse-Pipeline/serverpulse-backend/.env \
                 serverpulse-backend
                 '''
             }
