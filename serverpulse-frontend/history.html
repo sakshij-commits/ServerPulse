@@ -836,6 +836,8 @@
 
     async function fetchMetrics(serverId) {
       try {
+        const params = new URLSearchParams(window.location.search);
+        const serverId = params.get("server");
         const res = await fetch(`/api/metrics/history/${serverId}?range=${range}`, {
           headers: { Authorization: token }
         });

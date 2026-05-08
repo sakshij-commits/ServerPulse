@@ -29,7 +29,6 @@ app.use("/auth", authRoutes);
 app.use("/servers", serverRoutes);
 app.use("/config", configRoutes);
 app.use("/users", userRoutes);
-app.use("/metrics", require("./routes/metrics")(io));
 
 // Socket auth middleware
 const jwt = require("jsonwebtoken");

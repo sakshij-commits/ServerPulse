@@ -1167,7 +1167,7 @@
       window.location.href = "auth.html";
     }
 
-    const socket = io("/api", {
+    const socket = io( {
       auth: {
         token: localStorage.getItem("token")
       }
@@ -1548,6 +1548,8 @@
     async function loadHistory() {
       const serverId = document.getElementById('serverSelect').value;
       try {
+        const params = new URLSearchParams(window.location.search);
+        const serverId = params.get("server");
         const res = await fetch(`/api/metrics/history/${serverId}?range=${dashRange}`, {
           headers: { Authorization: localStorage.getItem("token") }
         });
