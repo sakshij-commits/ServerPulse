@@ -990,6 +990,7 @@
     });
 
     socket.on("metrics", (data) => {
+      console.log("SOCKET DATA:", data);
       if (!servers[data.serverId] || !servers[data.serverId].isActive) {
         return;
       }

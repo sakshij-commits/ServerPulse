@@ -1216,6 +1216,7 @@
 
     // ── socket metrics ──
     socket.on("metrics", (data) => {
+      console.log("SOCKET DATA:", data);
       const cpu = parseFloat(data.cpu.toFixed(1));
       const ram = parseFloat(((data.ramUsed / data.ramTotal) * 100).toFixed(1));
       const disk = parseFloat(((data.diskUsed / data.diskTotal) * 100).toFixed(1));
