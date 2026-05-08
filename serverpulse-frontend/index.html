@@ -1548,8 +1548,6 @@
     async function loadHistory() {
       const serverId = document.getElementById('serverSelect').value;
       try {
-        const params = new URLSearchParams(window.location.search);
-        const serverId = params.get("server");
         const res = await fetch(`/api/metrics/history/${serverId}?range=${dashRange}`, {
           headers: { Authorization: localStorage.getItem("token") }
         });
