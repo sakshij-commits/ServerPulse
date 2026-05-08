@@ -985,14 +985,21 @@
     const enabled = {};   // name → bool
 
     // ── SOCKET ──
-    const socket = io( {
+    const socket = io(window.location.origin, {
       auth: { token }
     });
 
     socket.on("metrics", (data) => {
       console.log("SOCKET DATA:", data);
-      if (!servers[data.serverId] || !servers[data.serverId].isActive) {
-        return;
+      if (!servers[data.serverId]) {
+
+          loadServers();
+
+          return;
+      }
+
+      if (!servers[data.serverId].isActive) {
+          return;
       }
 
       servers[data.serverId].metrics = data;
@@ -1348,6 +1355,7 @@
 
     // ── INIT ──
     loadServers();
+    setInterval(loadServers, 10000);
   </script>
 </body>
 
