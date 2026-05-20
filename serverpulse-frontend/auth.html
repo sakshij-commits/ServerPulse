@@ -1,38 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>ServerPulse — Login</title>
-  <link
-    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap"
-    rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
   <style>
-    *,
-    *::before,
-    *::after {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg: #f5f3ef;
-      --surface: #fdfcfb;
-      --border: #e8e4dc;
-      --text-1: #2c2a26;
-      --text-2: #7a7670;
-      --text-3: #b0aca4;
-      --sage: #a8c5b0;
-      --sage-bg: #eaf2ec;
-      --sage-dark: #4a7c5a;
-      --blush: #e8b4b0;
-      --blush-bg: #fceeed;
-      --blush-dark: #9c4a45;
-      --radius-sm: 10px;
-      --radius-md: 16px;
-      --radius-lg: 22px;
+      --bg:          #f5f3ef;
+      --surface:     #fdfcfb;
+      --border:      #e8e4dc;
+      --text-1:      #2c2a26;
+      --text-2:      #7a7670;
+      --text-3:      #b0aca4;
+      --sage:        #a8c5b0;
+      --sage-bg:     #eaf2ec;
+      --sage-dark:   #4a7c5a;
+      --blush:       #e8b4b0;
+      --blush-bg:    #fceeed;
+      --blush-dark:  #9c4a45;
+      --warn:        #e8d4a0;
+      --warn-bg:     #fdf8ec;
+      --warn-dark:   #8a6a20;
+      --radius-sm:   10px;
+      --radius-md:   16px;
+      --radius-lg:   22px;
     }
 
     body {
@@ -45,7 +39,6 @@
       justify-content: center;
     }
 
-    /* subtle background dots */
     body::before {
       content: '';
       position: fixed;
@@ -57,7 +50,7 @@
     }
 
     .auth-wrap {
-      width: 360px;
+      width: 380px;
       display: flex;
       flex-direction: column;
       gap: 20px;
@@ -65,7 +58,6 @@
       z-index: 1;
     }
 
-    /* logo at top */
     .auth-logo {
       display: flex;
       align-items: center;
@@ -75,46 +67,18 @@
     }
 
     .logo-dot {
-      width: 30px;
-      height: 30px;
-      border-radius: 9px;
-      background: var(--sage-bg);
-      border: 1.5px solid var(--sage);
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      width: 30px; height: 30px; border-radius: 9px;
+      background: var(--sage-bg); border: 1.5px solid var(--sage);
+      display: flex; align-items: center; justify-content: center;
     }
-
     .logo-dot::after {
-      content: '';
-      width: 9px;
-      height: 9px;
-      border-radius: 50%;
-      background: var(--sage-dark);
-      animation: blink 2s ease-in-out infinite;
+      content: ''; width: 9px; height: 9px; border-radius: 50%;
+      background: var(--sage-dark); animation: blink 2s ease-in-out infinite;
     }
+    @keyframes blink { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.75)} }
 
-    @keyframes blink {
+    .logo-text { font-size: 17px; font-weight: 500; letter-spacing: -0.4px; }
 
-      0%,
-      100% {
-        opacity: 1;
-        transform: scale(1)
-      }
-
-      50% {
-        opacity: 0.4;
-        transform: scale(0.75)
-      }
-    }
-
-    .logo-text {
-      font-size: 17px;
-      font-weight: 500;
-      letter-spacing: -0.4px;
-    }
-
-    /* card */
     .auth-card {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -122,273 +86,445 @@
       padding: 32px 28px;
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 18px;
     }
 
-    .auth-header {
-      text-align: center;
-    }
-
-    .auth-title {
-      font-size: 18px;
-      font-weight: 500;
-      letter-spacing: -0.3px;
-      color: var(--text-1);
-      margin-bottom: 4px;
-    }
-
-    .auth-sub {
-      font-size: 12.5px;
-      color: var(--text-3);
-    }
+    .auth-header { text-align: center; }
+    .auth-title { font-size: 18px; font-weight: 500; letter-spacing: -0.3px; color: var(--text-1); margin-bottom: 4px; }
+    .auth-sub   { font-size: 12.5px; color: var(--text-3); }
 
     /* fields */
-    .field {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
+    .field { display: flex; flex-direction: column; gap: 6px; }
 
     .field label {
-      font-size: 11.5px;
-      color: var(--text-2);
-      font-weight: 500;
-      letter-spacing: 0.2px;
+      font-size: 11.5px; color: var(--text-2);
+      font-weight: 500; letter-spacing: 0.2px;
+      display: flex; align-items: center; gap: 5px;
     }
+
+    .field-wrap { position: relative; }
 
     .field input {
       font-family: 'DM Sans', sans-serif;
-      font-size: 13.5px;
-      color: var(--text-1);
-      background: var(--bg);
-      border: 1px solid var(--border);
+      font-size: 13.5px; color: var(--text-1);
+      background: var(--bg); border: 1px solid var(--border);
       border-radius: var(--radius-sm);
-      padding: 10px 14px;
-      outline: none;
-      transition: border-color 0.15s;
+      padding: 10px 38px 10px 14px;
+      outline: none; transition: border-color 0.15s, background 0.15s;
       width: 100%;
     }
+    .field input::placeholder { color: var(--text-3); }
+    .field input:focus { border-color: var(--sage); background: var(--surface); }
+    .field input.valid   { border-color: var(--sage-dark); }
+    .field input.invalid { border-color: var(--blush-dark); }
 
-    .field input::placeholder {
-      color: var(--text-3);
+    /* tick / cross icon inside input */
+    .field-icon {
+      position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+      font-size: 13px; opacity: 0; transition: opacity 0.2s;
+      pointer-events: none;
     }
+    .field input.valid   ~ .field-icon.ok  { opacity: 1; }
+    .field input.invalid ~ .field-icon.err { opacity: 1; }
 
-    .field input:focus {
-      border-color: var(--sage);
-      background: var(--surface);
+    /* inline field hint */
+    .field-hint {
+      font-size: 11px; color: var(--text-3);
+      min-height: 14px;
+      transition: color 0.15s;
     }
+    .field-hint.bad { color: var(--blush-dark); }
+    .field-hint.good { color: var(--sage-dark); }
 
-    /* name field hidden by default */
-    #nameField {
+    /* password strength bar */
+    .strength-bar {
+      height: 3px; border-radius: 2px;
+      background: var(--border);
+      overflow: hidden;
       display: none;
     }
+    .strength-bar.show { display: block; }
+    .strength-fill {
+      height: 100%; border-radius: 2px;
+      width: 0; transition: width 0.3s, background 0.3s;
+    }
 
-    /* submit button */
+    /* password toggle */
+    .pw-toggle {
+      position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+      cursor: pointer; font-size: 13px; color: var(--text-3);
+      user-select: none; transition: color 0.15s;
+      z-index: 1;
+    }
+    .pw-toggle:hover { color: var(--text-2); }
+
+    /* password field — push icon left of eye toggle */
+    .pw-field input { padding-right: 60px; }
+    .pw-field .field-icon { right: 36px; }
+
+    /* password rules list */
+    .pw-rules {
+      display: none;
+      flex-direction: column;
+      gap: 4px;
+      margin-top: 2px;
+    }
+    .pw-rules.show { display: flex; }
+    .pw-rule {
+      font-size: 11px; color: var(--text-3);
+      display: flex; align-items: center; gap: 5px;
+      transition: color 0.2s;
+    }
+    .pw-rule::before { content: '○'; font-size: 9px; }
+    .pw-rule.met { color: var(--sage-dark); }
+    .pw-rule.met::before { content: '●'; }
+
+    #nameField { display: none; }
+
     .btn-primary {
       font-family: 'DM Sans', sans-serif;
-      font-size: 13.5px;
-      font-weight: 500;
-      color: var(--surface);
-      background: var(--sage-dark);
-      border: none;
-      border-radius: var(--radius-sm);
-      padding: 11px;
-      cursor: pointer;
-      width: 100%;
-      transition: opacity 0.15s;
+      font-size: 13.5px; font-weight: 500;
+      color: var(--surface); background: var(--sage-dark);
+      border: none; border-radius: var(--radius-sm);
+      padding: 11px; cursor: pointer; width: 100%;
+      transition: opacity 0.15s, transform 0.1s;
+      margin-top: 2px;
     }
+    .btn-primary:hover:not(:disabled) { opacity: 0.88; }
+    .btn-primary:active:not(:disabled) { transform: scale(0.99); }
+    .btn-primary:disabled { opacity: 0.45; cursor: not-allowed; }
 
-    .btn-primary:hover {
-      opacity: 0.88;
-    }
-
-    .btn-primary:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-
-    /* toggle link */
-    .auth-toggle {
-      text-align: center;
-      font-size: 12.5px;
-      color: var(--text-3);
-    }
-
+    .auth-toggle { text-align: center; font-size: 12.5px; color: var(--text-3); }
     .auth-toggle span {
-      color: var(--sage-dark);
-      font-weight: 500;
-      cursor: pointer;
-      text-decoration: underline;
-      text-underline-offset: 2px;
+      color: var(--sage-dark); font-weight: 500;
+      cursor: pointer; text-decoration: underline; text-underline-offset: 2px;
     }
+    .auth-toggle span:hover { opacity: 0.75; }
 
-    .auth-toggle span:hover {
-      opacity: 0.75;
-    }
-
-    /* error/success message */
     .auth-msg {
-      font-size: 12px;
-      padding: 10px 13px;
+      font-size: 12px; padding: 10px 13px;
       border-radius: var(--radius-sm);
-      display: none;
-      text-align: center;
+      display: none; text-align: center;
     }
+    .auth-msg.error   { background: var(--blush-bg); color: var(--blush-dark); border: 1px solid var(--blush); display: block; }
+    .auth-msg.success { background: var(--sage-bg);  color: var(--sage-dark);  border: 1px solid var(--sage);  display: block; }
 
-    .auth-msg.error {
-      background: var(--blush-bg);
-      color: var(--blush-dark);
-      border: 1px solid var(--blush);
-      display: block;
-    }
+    .auth-footer { text-align: center; font-size: 11px; color: var(--text-3); }
 
-    .auth-msg.success {
-      background: var(--sage-bg);
-      color: var(--sage-dark);
-      border: 1px solid var(--sage);
-      display: block;
+    /* shake animation on error */
+    @keyframes shake {
+      0%,100%{transform:translateX(0)}
+      20%{transform:translateX(-6px)}
+      40%{transform:translateX(6px)}
+      60%{transform:translateX(-4px)}
+      80%{transform:translateX(4px)}
     }
-
-    /* footer hint */
-    .auth-footer {
-      text-align: center;
-      font-size: 11px;
-      color: var(--text-3);
-    }
+    .shake { animation: shake 0.35s ease; }
   </style>
 </head>
-
 <body>
 
-  <div class="auth-wrap">
+<div class="auth-wrap">
 
-    <div class="auth-logo">
-      <div class="logo-dot"></div>
-      <span class="logo-text">ServerPulse</span>
+  <div class="auth-logo">
+    <div class="logo-dot"></div>
+    <span class="logo-text">ServerPulse</span>
+  </div>
+
+  <div class="auth-card" id="authCard">
+
+    <div class="auth-header">
+      <div class="auth-title" id="authTitle">Welcome back</div>
+      <div class="auth-sub"   id="authSub">Sign in to your dashboard</div>
     </div>
 
-    <div class="auth-card">
-
-      <div class="auth-header">
-        <div class="auth-title" id="authTitle">Welcome back</div>
-        <div class="auth-sub" id="authSub">Sign in to your dashboard</div>
+    <!-- Name (register only) -->
+    <div id="nameField" class="field">
+      <label>Name</label>
+      <div class="field-wrap">
+        <input id="name" type="text" placeholder="Your full name" oninput="validateName()"/>
+        <span class="field-icon ok">✓</span>
+        <span class="field-icon err">✕</span>
       </div>
-
-      <div id="nameField" class="field">
-        <label>Name</label>
-        <input id="name" type="text" placeholder="Your name" />
-      </div>
-
-      <div class="field">
-        <label>Email</label>
-        <input id="email" type="email" placeholder="you@example.com" />
-      </div>
-
-      <div class="field">
-        <label>Password</label>
-        <input id="password" type="password" placeholder="••••••••" />
-      </div>
-
-      <div class="auth-msg" id="authMsg"></div>
-
-      <button class="btn-primary" id="submitBtn" onclick="handleSubmit()">Sign in</button>
-
-      <div class="auth-toggle">
-        <span id="toggleText" onclick="toggle()">Don't have an account? Register</span>
-      </div>
-
+      <div class="field-hint" id="nameHint"></div>
     </div>
 
-    <div class="auth-footer">
-      ServerPulse · Real-time Server Monitoring
+    <!-- Email -->
+    <div class="field">
+      <label>Email</label>
+      <div class="field-wrap">
+        <input id="email" type="email" placeholder="you@example.com" oninput="validateEmail()"/>
+        <span class="field-icon ok">✓</span>
+        <span class="field-icon err">✕</span>
+      </div>
+      <div class="field-hint" id="emailHint"></div>
+    </div>
+
+    <!-- Password -->
+    <div class="field">
+      <label>Password</label>
+      <div class="field-wrap pw-field">
+        <input id="password" type="password" placeholder="••••••••" oninput="validatePassword()"/>
+        <span class="pw-toggle" onclick="togglePw()" id="pwEye">👁</span>
+        <span class="field-icon ok">✓</span>
+        <span class="field-icon err">✕</span>
+      </div>
+      <div class="strength-bar" id="strengthBar"><div class="strength-fill" id="strengthFill"></div></div>
+      <div class="pw-rules" id="pwRules">
+        <div class="pw-rule" id="rule-len">At least 8 characters</div>
+        <div class="pw-rule" id="rule-upper">One uppercase letter (A–Z)</div>
+        <div class="pw-rule" id="rule-lower">One lowercase letter (a–z)</div>
+        <div class="pw-rule" id="rule-num">One number (0–9)</div>
+        <div class="pw-rule" id="rule-special">One special character (!@#$…)</div>
+      </div>
+      <div class="field-hint" id="passwordHint"></div>
+    </div>
+
+    <div class="auth-msg" id="authMsg"></div>
+
+    <button class="btn-primary" id="submitBtn" onclick="handleSubmit()">Sign in</button>
+
+    <div class="auth-toggle">
+      <span id="toggleText" onclick="toggle()">Don't have an account? Register</span>
     </div>
 
   </div>
 
-  <script>
-    let isRegister = false;
+  <div class="auth-footer">ServerPulse · Real-time Server Monitoring</div>
 
-    // if already logged in, go straight to dashboard
-    if (localStorage.getItem("token")) {
-      window.location.href = "index.html";
+</div>
+
+<script>
+  let isRegister = false;
+
+  if (localStorage.getItem("token")) window.location.href = "index.html";
+
+  // ── Validators ────────────────────────────────────────────────────────────
+
+  function validateName() {
+    if (!isRegister) return true;
+    const val  = document.getElementById("name").value.trim();
+    const inp  = document.getElementById("name");
+    const hint = document.getElementById("nameHint");
+
+    if (val.length === 0) {
+      setFieldState(inp, hint, "", "");
+      return false;
+    }
+    if (val.length < 2) {
+      setFieldState(inp, hint, "Name must be at least 2 characters.", "bad", "invalid");
+      return false;
+    }
+    if (!/^[a-zA-Z\s'-]+$/.test(val)) {
+      setFieldState(inp, hint, "Only letters, spaces, hyphens, apostrophes.", "bad", "invalid");
+      return false;
+    }
+    setFieldState(inp, hint, "Looks good!", "good", "valid");
+    return true;
+  }
+
+  function validateEmail() {
+    const val  = document.getElementById("email").value.trim();
+    const inp  = document.getElementById("email");
+    const hint = document.getElementById("emailHint");
+
+    if (val.length === 0) {
+      setFieldState(inp, hint, "", "");
+      return false;
+    }
+    const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+    if (!emailRe.test(val)) {
+      setFieldState(inp, hint, "Enter a valid email address.", "bad", "invalid");
+      return false;
+    }
+    setFieldState(inp, hint, "Valid email!", "good", "valid");
+    return true;
+  }
+
+  const rules = {
+    len:     v => v.length >= 8,
+    upper:   v => /[A-Z]/.test(v),
+    lower:   v => /[a-z]/.test(v),
+    num:     v => /[0-9]/.test(v),
+    special: v => /[^a-zA-Z0-9]/.test(v),
+  };
+
+  function validatePassword() {
+    const val  = document.getElementById("password").value;
+    const inp  = document.getElementById("password");
+    const hint = document.getElementById("passwordHint");
+    const bar  = document.getElementById("strengthBar");
+    const fill = document.getElementById("strengthFill");
+    const rulesEl = document.getElementById("pwRules");
+
+    if (val.length === 0) {
+      setFieldState(inp, hint, "", "");
+      bar.classList.remove("show");
+      rulesEl.classList.remove("show");
+      return false;
     }
 
-    function toggle() {
-      isRegister = !isRegister;
+    // Show rules checklist when typing
+    rulesEl.classList.add("show");
+    bar.classList.add("show");
 
-      document.getElementById("authTitle").textContent = isRegister ? "Create account" : "Welcome back";
-      document.getElementById("authSub").textContent = isRegister ? "Start monitoring today" : "Sign in to your dashboard";
-      document.getElementById("submitBtn").textContent = isRegister ? "Register" : "Sign in";
-      document.getElementById("toggleText").textContent = isRegister ? "Already have an account? Sign in" : "Don't have an account? Register";
-      document.getElementById("nameField").style.display = isRegister ? "flex" : "none";
-
-      showMsg("", "");
+    let met = 0;
+    for (const [key, test] of Object.entries(rules)) {
+      const el = document.getElementById("rule-" + key);
+      if (test(val)) { el.classList.add("met"); met++; }
+      else            { el.classList.remove("met"); }
     }
 
-    function showMsg(text, type) {
-      const el = document.getElementById("authMsg");
-      el.textContent = text;
-      el.className = "auth-msg" + (type ? " " + type : "");
+    // Strength bar
+    const pct = (met / 5) * 100;
+    fill.style.width = pct + "%";
+    fill.style.background = met <= 2 ? "#e87070" : met <= 3 ? "#e8c070" : met === 4 ? "#a8c570" : "#4a7c5a";
+
+    if (!isRegister) {
+      // In login mode just show a hint but don't block
+      setFieldState(inp, hint, "", "", "");
+      return val.length > 0;
     }
 
-    function setLoading(loading) {
-      const btn = document.getElementById("submitBtn");
-      btn.disabled = loading;
-      btn.textContent = loading ? "Please wait…" : (isRegister ? "Register" : "Sign in");
+    if (met < 5) {
+      setFieldState(inp, hint, "Complete the requirements above.", "bad", "invalid");
+      return false;
+    }
+    setFieldState(inp, hint, "Strong password!", "good", "valid");
+    return true;
+  }
+
+  // ── Helpers ───────────────────────────────────────────────────────────────
+
+  function setFieldState(input, hintEl, hintText, hintClass, inputClass = "") {
+    hintEl.textContent = hintText;
+    hintEl.className   = "field-hint" + (hintClass ? " " + hintClass : "");
+    input.className    = inputClass;
+  }
+
+  function showMsg(text, type) {
+    const el = document.getElementById("authMsg");
+    el.textContent = text;
+    el.className   = "auth-msg" + (type ? " " + type : "");
+  }
+
+  function setLoading(loading) {
+    const btn = document.getElementById("submitBtn");
+    btn.disabled    = loading;
+    btn.textContent = loading ? "Please wait…" : (isRegister ? "Register" : "Sign in");
+  }
+
+  function togglePw() {
+    const inp = document.getElementById("password");
+    inp.type = inp.type === "password" ? "text" : "password";
+    document.getElementById("pwEye").textContent = inp.type === "password" ? "👁" : "🙈";
+  }
+
+  function shakeCard() {
+    const card = document.getElementById("authCard");
+    card.classList.remove("shake");
+    void card.offsetWidth; // reflow
+    card.classList.add("shake");
+  }
+
+  // ── Toggle login / register ───────────────────────────────────────────────
+
+  function toggle() {
+    isRegister = !isRegister;
+
+    document.getElementById("authTitle").textContent   = isRegister ? "Create account"        : "Welcome back";
+    document.getElementById("authSub").textContent     = isRegister ? "Start monitoring today" : "Sign in to your dashboard";
+    document.getElementById("submitBtn").textContent   = isRegister ? "Register"               : "Sign in";
+    document.getElementById("toggleText").textContent  = isRegister ? "Already have an account? Sign in" : "Don't have an account? Register";
+    document.getElementById("nameField").style.display = isRegister ? "flex" : "none";
+
+    // Show / hide password rules
+    const rulesEl = document.getElementById("pwRules");
+    const bar     = document.getElementById("strengthBar");
+    if (!isRegister) {
+      rulesEl.classList.remove("show");
+      bar.classList.remove("show");
     }
 
-    async function handleSubmit() {
-      const email = document.getElementById("email").value.trim();
-      const password = document.getElementById("password").value;
-      const name = document.getElementById("name").value.trim();
+    // Reset all fields
+    ["name","email","password"].forEach(id => {
+      const el = document.getElementById(id);
+      el.value = ""; el.className = "";
+    });
+    ["nameHint","emailHint","passwordHint"].forEach(id => {
+      const el = document.getElementById(id);
+      el.textContent = ""; el.className = "field-hint";
+    });
+    showMsg("", "");
+  }
 
-      if (!email || !password) { showMsg("Please fill in all fields.", "error"); return; }
-      if (isRegister && !name) { showMsg("Please enter your name.", "error"); return; }
+  // ── Submit ────────────────────────────────────────────────────────────────
 
-      setLoading(true);
-      showMsg("", "");
+  async function handleSubmit() {
+    const email    = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
+    const name     = document.getElementById("name").value.trim();
 
-      try {
-        if (isRegister) {
-          const res = await fetch("/api/auth/register", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ name, email, password })
-          });
-          const data = await res.json();
+    // Run all validators
+    const emailOk    = validateEmail();
+    const passwordOk = isRegister ? validatePassword() : password.length > 0;
+    const nameOk     = isRegister ? validateName()     : true;
 
-          if (!res.ok) { showMsg(data.message || "Registration failed.", "error"); return; }
+    if (!emailOk || !passwordOk || !nameOk) {
+      shakeCard();
+      showMsg("Please fix the errors above before continuing.", "error");
+      return;
+    }
 
-          showMsg("Account created! Signing you in…", "success");
-          setTimeout(() => { isRegister = false; toggle(); }, 1000);
+    setLoading(true);
+    showMsg("", "");
 
-        } else {
-          const res = await fetch("/api/auth/login", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email, password })
-          });
-          const data = await res.json();
+    try {
+      if (isRegister) {
+        const res  = await fetch("/api/auth/register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name, email, password })
+        });
+        const data = await res.json();
 
-          if (!res.ok || !data.token) { showMsg(data.message || "Invalid credentials.", "error"); return; }
-
-          localStorage.setItem("token", data.token);
-          window.location.href = "index.html";
+        if (!res.ok) {
+          shakeCard();
+          showMsg(data.message || data.error || "Registration failed.", "error");
+          return;
         }
 
-      } catch (err) {
-        showMsg("Cannot reach server. Is the backend running?", "error");
-      } finally {
-        setLoading(false);
-      }
-    }
+        showMsg("Account created! Signing you in…", "success");
+        setTimeout(() => { isRegister = false; toggle(); }, 1200);
 
-    // allow Enter key to submit
-    document.addEventListener("keydown", e => {
-      if (e.key === "Enter") handleSubmit();
-    });
-  </script>
+      } else {
+        const res  = await fetch("/api/auth/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+
+        if (!res.ok || !data.token) {
+          shakeCard();
+          showMsg(data.message || data.error || "Invalid credentials.", "error");
+          return;
+        }
+
+        localStorage.setItem("token", data.token);
+        window.location.href = "index.html";
+      }
+
+    } catch (err) {
+      shakeCard();
+      showMsg("Cannot reach server. Is the backend running?", "error");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  document.addEventListener("keydown", e => { if (e.key === "Enter") handleSubmit(); });
+</script>
 
 </body>
-
 </html>
