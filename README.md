@@ -1,57 +1,72 @@
-ANNEXURE 1 : USER INTERFACE SCREENS 
-1.1 Login Screen
+**ANNEXURE 1 : USER INTERFACE SCREENS** 
+
+**1.1 Login Screen**
+
 <img width="854" height="932" alt="image" src="https://github.com/user-attachments/assets/df03403d-1ad8-4cd0-819b-7e5791666e89" />
 
  
-1.2 Register Screen 
+**1.2 Register Screen**
+
 <img width="713" height="1235" alt="image" src="https://github.com/user-attachments/assets/c05269c6-a521-4238-b331-612434ee792b" />
 
  
-1.3 Dashboard
+**1.3 Dashboard**
+
 <img width="760" height="1352" alt="image" src="https://github.com/user-attachments/assets/8b3dddd3-6926-418e-92db-52c0718a6777" />
 
 
-1.4 Server Page
+**1.4 Server Page**
+
 <img width="687" height="1341" alt="image" src="https://github.com/user-attachments/assets/dd5c998d-f007-4fe5-9304-365bfdc30c1f" />
 
 
-1.5 Add Server
+**1.5 Add Server**
+
 <img width="604" height="544" alt="image" src="https://github.com/user-attachments/assets/f764dbe4-4569-440c-898b-72c60a6d9554" />
 
 
-1.6 Server Details
+**1.6 Server Details**
+
 <img width="721" height="669" alt="image" src="https://github.com/user-attachments/assets/53f10189-b957-4468-a8d6-ba0d395d927e" />
 
 
-1.7 Alerts Page
+**1.7 Alerts Page**
+
 <img width="751" height="1335" alt="image" src="https://github.com/user-attachments/assets/4657dec5-38ef-4994-82ec-d6b60ef323f2" />
 
  
-1.8 History Page
+**1.8 History Page**
+
 <img width="754" height="1340" alt="image" src="https://github.com/user-attachments/assets/439a5ffe-7cbc-4ca9-9fe7-d8a1923e12e3" />
 
 
-1.9 Profile Settings
+**1.9 Profile Settings**
+
 <img width="940" height="878" alt="image" src="https://github.com/user-attachments/assets/a3896f92-7fe2-4753-85c2-f5060dd5a619" />
  
 
-1.10 Server Settings
+**1.10 Server Settings**
+
 <img width="954" height="831" alt="image" src="https://github.com/user-attachments/assets/a3f69b9f-7b7a-46a6-82fd-3a1d6480404a" />
 
  
-1.11 Alert Thresholds Settings
+**1.11 Alert Thresholds Settings**
+
 <img width="863" height="1267" alt="image" src="https://github.com/user-attachments/assets/a6fbf2fc-4b8d-45ee-8850-da8dd5eb9012" />
 
 
-1.12 Notification Settings
+**1.12 Notification Settings**
+
 <img width="849" height="1320" alt="image" src="https://github.com/user-attachments/assets/c31c34a5-25d7-4e75-9fd8-4632dc0356d0" />
 
  
-1.13 Team Access Settings 
+**1.13 Team Access Settings**
+
 <img width="945" height="865" alt="image" src="https://github.com/user-attachments/assets/63d3037d-8844-4d84-bac2-da80e57f80a2" />
  
  
-1.14 System Settings
+**1.14 System Settings**
+
 <img width="916" height="1045" alt="image" src="https://github.com/user-attachments/assets/60d1d87a-1127-4d63-8719-df3ac91d804a" />
 
 **Chapter 1: Introduction**
@@ -61,7 +76,11 @@ ANNEXURE 1 : USER INTERFACE SCREENS
 
 
 ServerPulse is a real-time multi-server monitoring system used to monitor remote servers from a centralized dashboard. Lightweight agents installed on AWS EC2 servers collect system metrics such as CPU usage, RAM usage, disk usage, uptime, and network activity, and send them to the backend server at regular intervals.
-The backend processes the data, stores it in MongoDB Atlas, generates alerts when thresholds are exceeded, and sends live updates to the frontend dashboard using Socket.IO. The system also provides historical charts, role-based authentication, alert management, and server management features.
+
+The backend processes the data, stores it in MongoDB Atlas, generates alerts when thresholds are exceeded, and sends live updates to the frontend dashboard using Socket.IO. 
+
+The system also provides historical charts, role-based authentication, alert management, and server management features.
+
 The project is deployed using Docker, Jenkins CI/CD pipeline, AWS EC2, and Nginx reverse proxy, making it a complete full-stack and DevOps-based monitoring solution.
 
 
