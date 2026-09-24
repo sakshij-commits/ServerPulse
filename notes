@@ -1,11 +1,4 @@
---> cd D:\ServerPulse\serverpulse-backend
-node server.js
-
---> cd D:\ServerPulse\serverpulse-agent
-node agent.js
-
---> 13.206.248.136
-
+/*
 ##########################
 
 sudo nohup /usr/bin/jenkins > jenkins.log 2>&1 &
@@ -15,15 +8,34 @@ sudo cat /var/lib/jenkins/secrets/initialAdminPassword (for the pw)
 
 ##################
 
+#######################
+
+how to open jenkins on browser --
+backend_ec2_ip:8080 
+
+################################################################################
+
+HOW TO ACCESS THE BACKEND 
+
+START BACKEND EC2
+cd ~/ServerPulse/serverpulse-backend
+
+then check if backend is working
+docker ps -a 
+
+docker start serverpulse-api
+
+see you dont have to start like node server.js anymore you just have to access the 
+jenkins and build now and then it will auto do it
+
+sometimes due to prolonged inactivity your mongodb might also turn off so turn that on too
+
+baki after that 
 cd serverpulse-agent
 nano.env (change to new ip)
 node agent.js
 
-open jenkins --
-ip:8080
-
 ################################################################################
-
 
 HOW TO ADD NEW AGENT 
 STEP 1 — LAUNCH NEW EC2
@@ -194,3 +206,4 @@ setInterval(fetchPollingConfig, 10000);
 // 🔥 Initial config fetch
 fetchPollingConfig();
 
+*/
